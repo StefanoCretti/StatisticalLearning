@@ -1,0 +1,54 @@
+\documentclass[oneside]{book}
+
+% Order packages in each section in alphabetic order
+% Added some generally useful packages 
+% At the end of the project, remove not needed ones
+
+% General packages
+\usepackage[english]{babel}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+
+% Layout and formatting packages
+\usepackage[ruled,vlined]{algorithm2e}
+\usepackage[toc, page]{appendix}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{fancyhdr}
+\usepackage{float}
+\usepackage[T1]{fontenc}
+\usepackage[a4paper, total={6in, 8in}]{geometry}
+\usepackage{listings}
+\usepackage{makecell}
+\usepackage{multicol}
+\usepackage{soul}
+\usepackage{textcomp}
+\usepackage{wrapfig}
+\usepackage{xcolor}
+
+% Math packages
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{dsfont}
+\usepackage{mathtools}
+
+% Some general page settings from 
+% https://github.com/giacThePhantom/MolecularPhysics
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\rightmark}
+\cfoot{\leftmark}
+\rfoot{\thepage}
+
+\setcounter{secnumdepth}{5}
+
+\lstset{
+    frame=tb, % draw a frame at the top and bottom of the code block
+    tabsize=4, % tab space width
+    showstringspaces=false, % don't mark spaces in strings
+    numbers=none, % display line numbers on the left
+    commentstyle=\color{green}, % comment color
+    keywordstyle=\color{red}, % keyword color
+    stringstyle=\color{blue}, % string color
+    breaklines=true,
+    postbreak=\mbox{\textcolor{green}{$\hookrightarrow$}\space}
+}

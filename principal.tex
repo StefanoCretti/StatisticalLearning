@@ -1,0 +1,29 @@
+\input{prefix}  % Place all packages in the prefix file
+
+% Set up document info
+\title{\Huge\textbf{courseName}}
+\author{
+  authorName \\
+  \small telegram: \href{telegramLink}{@authorName} \\[3pt]
+\small Github: \href{mainRepoLink}{mainRepoLink}}
+
+% File structure to expand
+% Files should be named #section #chapter chapterName
+\begin{document}
+\maketitle
+\tableofcontents
+
+  % Add introduction if needed
+  % Parts may not be needed, chapters could be enough
+  
+  \part{nameOfPart01}
+
+    \input{chapters/0101chapterName}
+
+  \part{nameOfPart02}
+
+    \input{chapters/0201chapterName}
+  
+  % Add appendix if needed
+
+\end{document}
