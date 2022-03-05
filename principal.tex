@@ -1,11 +1,11 @@
 \input{prefix}  % Place all packages in the prefix file
 
 % Set up document info
-\title{\Huge\textbf{courseName}}
+\title{\Huge\textbf{Statistical learning - Vinciotti (2022)}}
 \author{
-  authorName \\
-  \small telegram: \href{telegramLink}{@authorName} \\[3pt]
-\small Github: \href{mainRepoLink}{mainRepoLink}}
+  Stefano Cretti\\
+  \small telegram: \href{https://t.me/StefanoCretti}{@StefanoCretti} \\[3pt]
+\small Github: \href{https://github.com/StefanoCretti/StatisticalLearning.git}{https://github.com/StefanoCretti/StatisticalLearning.git}}
 
 % File structure to expand
 % Files should be named #section #chapter chapterName
@@ -13,16 +13,13 @@
 \maketitle
 \tableofcontents
 
-  % Add introduction if needed
-  % Parts may not be needed, chapters could be enough
+  \part{Introduction}
   
-  \part{nameOfPart01}
+    \input{chapters/0101generalInfo}
 
-    \input{chapters/0101chapterName}
-
-  \part{nameOfPart02}
-
-    \input{chapters/0201chapterName}
+  \part{Statistical learning}
+    
+    \input{chapters/0201whatIsStatLearning}
   
   % Add appendix if needed
 
