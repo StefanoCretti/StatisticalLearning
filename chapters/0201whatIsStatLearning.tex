@@ -5,7 +5,7 @@
 
     \begin{itemize}
       \item $Y$ : response/dependent/outcome variable
-      \item $\vec{X} = (X_1, \dots, X_p)$: predictors/features/independent variables/covariates
+      \item $\vec{X} = (X_1, \dots, X_p)$: vector of predictors/features/independent variables/covariates
     \end{itemize}
     We assume that there is a relationship between $Y$ and $\vec{X}$, which can be written as:
 
@@ -19,7 +19,7 @@
         \item[$\bullet$] $\varepsilon \perp \vec{X}$ (It is independent from $\vec{X}$)
       \end{itemize}
     \end{itemize}
-    Therefore, the expression \textbf{statistical learning} encompasses different methods to estimate $f(\vec{X})$.
+    Therefore, the expression \textbf{statistical learning} encompasses different methods to estimate $f(\vec{X})$. 
 
   \section{Why estimate \textit{f}?}
     There are two main reasons to estimate $f$, those two being \textbf{prediction} and \textbf{inference}.
@@ -32,7 +32,7 @@
       With $\hat{f}$ being our estimate of $f$.
       
       If this is the only reason to estimate $f$, then $\hat{f}$ can be a black-box method (deep learning).
-      The accuracy of $\hat{Y}$ as a predictor of $Y$ can be described in the following way:
+      The accuracy of $\hat{Y}$ as a predictor of $Y$ can be described calculating the expected MSE (mean squared error):
 
       \begin{align*}
         E[(Y&-\hat{f}(\vec{X}))^2 \,|\, \vec{X} = \vec{x}\,] = 
@@ -179,9 +179,13 @@
         \item $Var(\varepsilon)$ is the irreducible error
         \item $Var(\hat{f}(\vec{X}))$ is the variance of the model
       \end{itemize}
-      \textbf{Bias} is basically the error of the estimated model due to the training data. If an estimated model performs well on the training data but it does not perform well on new data, the estimated model has high bias. If an estimated model performs well on multiple data sets, the estimated model has low bias. High bias means that an estimated model is far from the real model. 
-
-      In order to minimize the expected error, we need to achieve low bias and low variance. In practice, one needs to fina a good trade-off between bias and variance, since reducing one often involves increasing the other. In general:
+      \textbf{Bias} On the other hand, bias refers to the error that is introduced by approximating a problem, which may be extremely complicated, by a much
+simpler model. If an estimated model performs well on the training data but it does not perform well on new data, the estimated model has high bias. If an estimated model performs well on multiple data sets, the estimated model has low bias. High bias means that an estimated model is far from the real model. \\
+      \textbf{Variance} refers instead to the amount by which $\hat{f}$ would change if we
+estimated it using a different training data set. Ideally, the $\hat{f}$ calculated 
+through different datasets should be not significantly different. The more flexible models are generally more influenced
+by a change of dataset. \\
+      In order to minimize the expected error, we need to achieve low bias and low variance. In practice, one needs to find a good trade-off between bias and variance, since reducing one often involves increasing the other. In general:
       \begin{itemize}
         \item A \textbf{simpe model} has high bias (it is far from the real model) and low variance (when fitting using different training data you get similar estimated parameters).
         \item A \textbf{complex model} has low bias and high variance.
