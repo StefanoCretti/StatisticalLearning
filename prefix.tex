@@ -28,6 +28,7 @@
 % Math packages
 \usepackage{amsfonts}
 \usepackage{amsmath}
+\usepackage{amsthm}
 \usepackage{dsfont}
 \usepackage{mathtools}
 
@@ -54,3 +55,6 @@
 }
 
 \renewcommand{\vec}[1]{\underline{#1}} % Use underline for vectors
+\DeclareMathOperator*{\argmax}{argmax} % Create argmax function 
+\newtheorem{theorem}{Theorem} % Add theorem environment
+\newcommand{\mbeq}{\overset{!}{=}} % create must be equal command
