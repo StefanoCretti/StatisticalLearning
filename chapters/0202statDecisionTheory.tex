@@ -74,54 +74,66 @@
     \end{proof}
     % TODO Some steps could be clearer
 
-    In a regression setting you could use other loss functions, 
-    This is not the only choice
+    In a regression setting you could use other loss functions, such as 
     $$L(Y|f(\vec{X})) = |Y - f(\vec{X})|$$
-    $f(\vec{x}) = \text{ median of } Y \text{ given } \vec{x}$ 
-    LAD regression (least absolute deviation)
-    Robust statistics (median is more robust to outliers)
+    which is used in \textbf{least absolute deviation} (LAD) regression. In this case $f(\vec{x})$ is the median of $Y$ given $\vec{x}$, therefore you have a model which is more robust to outliers.
 
     We will choose the squared error loss and this motivates how the methods are developed.
     For example:
-    Linear regression: $$Y|\vec{X} = \vec{x} \sim N(\vec{x}^t\vec{\beta}, \sigma^2)$$
-    Way to express linear regression focussing on conditional mean
-    $$E[Y|\vec{X} = \vec{x}] = \beta_0 + \beta_1x_1 + \dots + \beta_px_p$$ (parametric)
+    \begin{itemize}
+      \item \textbf{Linear regression} (parametric regression) can be expressed as 
+            $$Y|\vec{X} = \vec{x} \sim N(\vec{x}^t\vec{\beta}, \sigma^2)$$ 
+            or focussing more on the conditional mean
+            $$E[Y|\vec{X} = \vec{x}] = \beta_0 + \beta_1x_1 + \dots + \beta_px_p$$
+      \item \textbf{K nearest neighbour} (non-parametric regression)
+    \end{itemize}
 
-    K nearest neighbour (non-parametric approach for regression)
+    \subsection{K nearest neighbour for regression}
+      % TODO add graph 
+      In the scope of regression, K nearest neighbour method is defined as
+      $$\hat{f}(\vec{x}) = \text{ Average } (y_i | \vec{x}_i \in N_K(\vec{x}))$$
+      Where:
+      \begin{itemize}
+        \item Average is the sample mean
+        \item $N_K(\vec{x})$ is the neighbourhood of $K$ points closest to $\vec{x}$
+      \end{itemize}
 
-    K nearest neighbour 
-    % TODO add graph 
-    $$\hat{f}(\vec{x}) = \text{ Average } (y_i | \vec{x}_i \in N_K(\vec{x}))$$
-    Sample mean, neigbourhood of $k$ points closest to $\vec{x}$
-
-    It makes two approximations:
-    Using sample mean to approximate population mean
-    Uses a neighbourhood of $\vec{x}$ rather than only $\vec{x}$
-
-    Works well if a lot of data and p (number of predictors is small)
-
-    This simple approach inspired the development of more sophisticated kernel methods.
+      This method makes two approximations:
+      \begin{itemize}
+        \item It uses sample mean to approximate population mean
+        \item It uses a neighbourhood of $\vec{x}$ rather than only $\vec{x}$
+      \end{itemize}
+      
+      This method works well if you have a high amount of data and the number of parameters ($p$) is small.
+      This simple method is rarely used, but it has inspired the development of more sophisticated kernel methods.
 
   \section{Classification setting}
-    Response $Y$ is categorical, with $K$ categories. 
+    In a classification setting the response $Y$ is categorical, with $K$ categories. 
     A classifier is deciding which class to assign to a new observation $\vec{x}$.
-    Our $\hat{Y}$ in this case is the predicted class.
+    In this case $\hat{Y}$ is the predicted class.
+    
+    An example of loss function that can be used in classificiation setting is the \textbf{0-1 loss function} which penalizes classifying a datapoint in the wrong class. Assume for instance the binary case, meaning $K = 2$ (but you could generalize for any number of classes); in that case the 0-1 loss function can be represented as
+    $$ 
+    L(Y, \hat{Y}(\vec{X})) = \text{TODO Add punnet square}
+    $$
+    % TODO Add punnet square
+    Where:
+    \begin{itemize}
+      \item $Y$ is the true class
+      \item $\hat{Y}(\vec{X}$ is the predicted class
+    \end{itemize}
+    Notice that this function penalizes the same way all the misclassified observations (it assigns them the value 1).  
+    
+    Using the 0-1 loss function, the criterion for choosing the model becomes finding $\hat{Y}$, which is the function of $\vec{X}$ such that it minimizes the \textbf{expected 0-1 loss}, defined as:
 
-    $0-1$ LOSS The loss function basically penalizes choosing wrong
-    $$ L(Y, \hat{Y}(\vec{X})) =$$
-    True class predicted class
-    % TODO True false table 
-    % TODO k*k mat
-    In this case every mistake counts as 1
-
-    Leading to the criterion: find $\hat{y}$ that minimizes
-    Expected 0-1 loss 
     $$ E[L(Y, \hat{Y}(\vec{X}))]$$
-    Main question: what function of $\vec{X}$ minimizes the expected 0-1 loss
 
-    Let us concentrate on one $\vec{x}$: (inner part of the expectation)
-    $$E[L(Y, \hat{Y}(\vec{X}))] = \sum_{k=1}^k L(k, \hat{Y}(\vec{x}))p(k|\vec{x})$$
-    Considering the binary case, if the classifier predicts $\vec{x}$ to class 0 ($\hat{y} = 0$),
+    To find $\hat{Y}$, let us consider just one $\vec{x}$, therefore the problem becomes minimizing 
+
+    $$E[L(Y, \hat{Y}(\vec{x}))] = \sum_{k=1}^k L(k, \hat{Y}(\vec{x})) \; p(k|\vec{x})$$
+
+    (Which is the weighted sum of $\vec{x}$ belonging to each possible class).
+    Then, considering the binary case, if the classifier predicts $\vec{x}$ to belong to class 0 ($\hat{y} = 0$), we have 
 
     \begin{align*}
       E[L(Y,0)] & = L(0,0)p(0|\vec{x}) + L(1, 0)p(1|\vec{x}) \\
@@ -129,31 +141,28 @@
                 & = p(1|\vec{x})
     \end{align*}
 
-    If the classifier predicts $\vec{x}$ to class 1 ($\hat{y} = 1$),
+    On the other hand, if the classifier predicts $\vec{x}$ to belong to to class 1 ($\hat{y} = 1$), we have
+
     \begin{align*}
       E[L(Y,1)] & = L(0,1)p(0|\vec{x}) + L(1, 1)p(1|\vec{x}) \\
                 & = 1 \cdot p(0|\vec{x}) + 0 \cdot p(1|\vec{x}) \\
                 & = p(0|\vec{x})
     \end{align*}
 
-    Predicting $\vec{x}$ to the class that minimizes the expected loss results in:
-    classifying $\vec{x}$ to class 1 if $$p(1|\vec{x}) > p(0|\vec{x})$$
-    Since $p(0|\vec{x}) = 1 - p(1|\vec{x})$, we have that
+    Predicting $\vec{x}$ to the class that minimizes the expected 1-0 loss results in 
+    classifying $\vec{x}$ to class 1 if $p(1|\vec{x}) > p(0|\vec{x})$.
+    Since $p(0|\vec{x}) = 1 - p(1|\vec{x})$, we can write
     $$p(1|\vec{x}) > 1 - p(1|\vec{x}) \implies 2p(1|\vec{x}) > 1 \implies p(1|\vec{x})>0.5$$ 
+    Therefore, in the binary case, $\vec{x}$ is predicted to belong the class with more than $0.5$ probability (which is intuitive).
 
-    In general ($k$ classes), the 0-1 loss is minimized by the following rule:
-    Bayes classifier
-    % TODO Fix formula?
-    Assign $\vec{x}$ to class 
+    In general ($k$ classes), the 0-1 loss is minimized by the \textbf{bayes classifier}, which states to assign $\vec{x}$ to class $j$ where 
+
     $$j = \argmax_{i\,\in\,classes} p(Y = j|\vec{X} = \vec{x})$$
 
-    (assign x to the class with the highest probability)
-    Just tells us how to set the problem, but then the single method has to make us estimate the probabilities.
-    Bayes classifier is optimal in 0-1 loss
+    (Which means assigning $\vec{x}$ to the class with the highest probability).
+    This approach tells us how to set the problem, but it does not give any information on the probabilities, which have to be estimated by the single method.
 
-    Try with k = 3 and classes 0,1,2
-
-    In the binary case:
+    To rewrite the binary case in another way:
     $$
     \text{assign } \vec{x} \text{ to class} 
     \begin{cases}
@@ -163,66 +172,75 @@
     $$
     
     % TODO add decision boundary graph
-    $p(1|\vec{x}) = 0.5$ Bayes decision boundary
+    The line formed by the points with probability $p(1|\vec{x}) = 0.5$ is called \textbf{bayes decision boundary} or \textbf{decision surface}.
 
-    Bayes error rate 
-    % TODO Make brackets bigger
-    $$\text{BER } = 1 - E_{\vec{X}}(\max_{j} p(j|\vec{x}))$$
-    Probability of committing an error 
-
+    The \textbf{bayes error rate} (BER) is the probability of committing an error when classifying observations. It is defined as:
+    
+    $$\text{BER } = 1 - E_{\vec{X}}\left(\max_{j} p(j|\vec{x})\right)$$
+    
     % TODO Add graphs
-    $$\text{perfect separation } \implies \max_{j} p(j|\vec{x}) = 1 \implies \text{ BER } = 0$$
+    We talk about \textbf{perfect separation } of the classes when 
+    $$\max_{j} p(j|\vec{x}) = 1 \implies \text{ BER } = 0$$
+    In this case it is possible to classify any $\vec{x}$ without error. More often than not,
+    $\text{BER } > 0$, therefore you have some irreducible error due to a partial overlap of the classes.
 
-    $$\text{BER } > 0$$ (irreducible error)
+    It is possible to use a more generic loss function, called \textbf{misclassification loss function}, which can be represented (if $K = 2$) as
 
-    There is a more general loss function:
-    Misclassification loss (binary example)
-    $$L(Y, \hat{Y}(\vec{x})) = $$ % TODO Add table
-    Misclassification errors are not equal 
-    $C_0$ is the misclassification cost of misclassifying a class 0 to 1
-    $C_1$ is the misclassification cost of misclassifying a class 1 to 0
-    Often the errors are not equal (credit risk, medical context)
-    Often there are unbalanced classes (rare disease, but if you do not penalize enough "Diseased" you get a classifier which has high accuracy but just tells that everyone in healty)
+    $$L(Y, \hat{Y}(\vec{x})) = \text{TODO add punnet square}$$ 
+    % TODO Add table
 
-    If we repeat the same procedure with this 
-    $$E[L(Y,0)] = c_1 p(1|\vec{x})$$
-    $$E[L(Y,1)] = c_0 p(0|\vec{x})$$
-    So assign $\vec{x}$ to the class 1 if 
+    This loss function is analogous to the 0-1 loss function, but it assigns different weights to different errors, therefore the misclassifications have different costs:
+    \begin{itemize}
+      \item $C_0$ is the misclassification cost of misclassifying a class 0 to 1
+      \item $C_1$ is the misclassification cost of misclassifying a class 1 to 0
+    \end{itemize}
+    Just like the 0-1 loss function, misclassification loss function can be generalized for $K$ classes.
+    This loss function is generally better than the 0-1 loss function since in real situations it is likely for misclassifications to have different relevance (credit risk evaluation, medical context and others). Moreover, this loss function allows you to adjust for unbalanced classes. Consider for example a rare disease; using a 0-1 loss function results in a model which always classifies patients as healty, therefore it is almost always correct, but it does not perform well when trying to determine which patients are affected by the disease. When using misclassification loss function, you can instead increase the weight of the misclassification "classify a patient as healthy when they are not", which may lead to worse results in terms of identifying healthy patients, but way better results in terms of identifying diseased patients.
+    
+    Repeating the same steps used for 0-1 loss function, we can determine the threshold for the misclassification function (for $k=2$ but it can be generalized)
+    $$E[L(Y,0)] = c_1 p(1|\vec{x}) \text{ and } E[L(Y,1)] = c_0 p(0|\vec{x})$$
+  
+    Therefore we assign $\vec{x}$ to class 1 if 
+
     $$c_1 p(1|\vec{x}) > c_0 p(0|\vec{x})$$
-    Since $$p(0|\vec{x}) = 1 - p(1|\vec{x})$$
-    $$c_1 p(1|\vec{x}) > c_0 - c_0 p(1|\vec{x}))$$
-    $$p(1|\vec{x}) > \frac{c_0}{c_0 + c_1}$$
-    New threshold that takes into account different errors.
+
+    But since $p(0|\vec{x}) = 1 - p(1|\vec{x})$, we can instead write
+    \begin{align*}
+    c_1 p(1|\vec{x}) &> c_0 - c_0 p(1|\vec{x})) \\
+    p(1|\vec{x}) &> \frac{c_0}{c_0 + c_1}
+    \end{align*}
+    which is the classification threshold that takes into account different error weights.
 
   \section{Model accuracy}
-    In practice, we would use our chosen method to estimate $f(\vec{x})=E[Y|\vec{X}=\vec{x}]$ in a regressionm or $p(1|\vec{x})$ in a classification from training data $(\vec{x}_i, y_i), \, i = 1, \dots, n$
+    In practice, we would use our chosen method to estimate $f(\vec{x})=E[Y|\vec{X}=\vec{x}]$ (regression) or $p(1|\vec{x})$ (classification) from training data $(\vec{x}_i, y_i), \; i = 1, \dots, n$.
+    The \textbf{accuracy} of the model is typically measured on some test data 
+    $(\vec{x}_i^{(t)}, y_i^{(t)}), \, i = 1, \dots, m $.
 
-    Accuracy is typically measured on test data 
-    $$ (\vec{x}_i^{(t)}, y_i^{(t)}), \, i = 1, \dots, m $$
-    in a regression setting, using MSE
-    % TODO Fix brackets
-    $$\text{MSE } = \frac{1}{m} \sum_{i = 1}^{m}(y_i^{(t)} - \hat{f}(\vec{x}_i^{(t)}))^2$$
+    Therefore, a regression that uses MSE has for accuracy
+    $$\text{MSE } = \frac{1}{m} \sum_{i = 1}^{m}\left(y_i^{(t)} - 
+                    \hat{f}\left(\vec{x}_i^{(t)}\right)\right)^2$$
+    
+    % TODO Add confusion matrix image
+    Meanwhile, for a classification, you create a \textbf{confusion matrix}, estimate the probabilities via some method, substitute the values into the following formulas
+    \begin{align*}
+      \text{True positive rate (TPR)} &= \frac{\text{TP}}{\text{TP } + \text{ TN}} &
+        &= \text{ sensitivity} \\
+      \text{False positive rate (FPR)} &= \frac{\text{FP}}{\text{FN } + \text{ FP}} 
+        &= 1 - \frac{\text{TN}}{\text{TN } + \text{ FP}} &= 1 - \text{ specificity} \\
+      \text{Error rate} &= \frac{\text{FP } + \text{ FN}}{m}
+    \end{align*}
+    Notice that this last formula only works when using a 1-0 loss function; if you are using a misclassification loss function, the formula is similar but weighted:
+    $$\text{Misclassification cost}= \frac{c_0 \text{ FP} + c_1 \text{ FN}}{m}$$
 
-    In classification estimate and plug in formula
-    Confusion matrix 
-    % TODO Add table true negative and so on
-
-    $$\text{TPR } = \frac{\text{TP}}{\text{TP } + \text{ TN}}$$ sensitivity 
-    $$\text{FPR } = \frac{\text{FP}}{\text{TN } + \text{ FP}}$$
-    $$ = 1 - \frac{\text{TN}}{\text{TN } + \text{ FP}}$$ 1 - specificity
-    $$\text{ERROR RATE } = \frac{\text{FP } + \text{ FN}}{m}$$ 
-    These above only work if you assume a 1-0 loss, no if different
-
-    If costs are unequal, you still count misclassifications but multiply by weight
-    $$Miscalssification cost = \frac{c_0 \text{ FP} + c_1 \text{ FN}}{m}$$
-    Since precise costs are difficult to say, better to plot Receiver Operating Characteristic (ROC) curve
-    Basically you change all possible values of the threshold from zero to one; extrema will be wrong but some value in the middle would be fine, thus you remake the confusion matrix with the new cutoff
-    FPR vs TPR for all possible thresholds $t \in [0, 1]$
+    Since defining the exact costs of the misclassifications might prove difficult, a possible approach is using the \textbf{receiver operating characteristic} (ROC) curve. Basically you plot all the pairs (FPR, TPR) you obtain by varying the classification threshold from 0 to 1;
+    you will then obtain a curve from which you can decide which value to use as a threshold (the one you see fit for your needs of specificity and sensibility). 
+   
     % TODO Add ROC graph 
-    Best possible case would be top left corner (deterministic) so you want the highest curve you can
-    Diagonal worst case (would be the same as tossing a coin)
-    Area under the curve is called AUC (the higher the better, best 0.5, worst 0)
-    If lines cross you decide based on which area you are interested in 
-    
-    
+
+    Different models have different ROC curves.
+    The best possible curve would touch the top left corner, meaning that you never misclassify any observation and therefore the model is deterministic.
+    The worst possibile curve corresponds to the diagonal (from bottom left to top right corner), meaning that you have a 1/2 chance of misclassifying the observation (the same as tossing a coin to decide).
+    The \textbf{area under the curve} (AUC) is the area between the curve and the main diagonal. Its value goes from 0 in the worst case to 0.5 in the best one. 
+    For these reasons, you want a curve that is as high as possible (and thus has the biggest possible AUC). 
+    When choosing between two models, if the ROC curve of one of the models is always above the ROC of the other model, the former one is the strictly better one; if the two ROC curves intersect, you choose the model whose curve in highest in the region you are most interested in (based on sensibility and specificity).    
   

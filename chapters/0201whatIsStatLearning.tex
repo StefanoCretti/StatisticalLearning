@@ -110,84 +110,84 @@
     \subsection{Parametric vs non-parametric methods}
       Despite parametric methods being more restrictive than non-parametric ones, we might still choose to adopt the former for the sake of interpretability and generalizability outside of the training data.
 
-    \section{Bias-variance trade-off}
+  \section{Bias-variance trade-off}
 
-      Assume you have some data pairs in the form $(x_i, y_i), \, i = 1, \dots, n$; you can then define the estimate function $\hat{f}(x)$ as a linear model with up to $n-1$ parameters (more parameters give the same result as $n-1$ parameters) and an intercept value. You could thus use, for instance, the models:
-      \begin{align*}
-        & 1 \text{ parameter}    &f(x) &= \beta_0 + \beta_1x + \varepsilon \\
-        & 2 \text{ parameters}   &f(x) &= \beta_0 + \beta_1x + \beta_2x^2 + \varepsilon \\
-        & \vdots                 &     &\vdots \\
-        & n-1 \text{ parameters} &f(x) &= \beta_0 + \beta_1x + \beta_2x^2 + \dots + \beta_{n-1}x^{n-1} + \varepsilon \\
-      \end{align*}
-      You could choose the model with the highest number of parameters; this model would explain all the variance of the training data ($R^2=1$) yet it would be very complex and perform badly with new data points. On the other hand a model with a lower number of parameters would explain less of the variance of the training data, yet it could perform better with new data points.
+    Assume you have some data pairs in the form $(x_i, y_i), \, i = 1, \dots, n$; you can then define the estimate function $\hat{f}(x)$ as a linear model with up to $n-1$ parameters (more parameters give the same result as $n-1$ parameters) and an intercept value. You could thus use, for instance, the models:
+    \begin{align*}
+      & 1 \text{ parameter}    &f(x) &= \beta_0 + \beta_1x + \varepsilon \\
+      & 2 \text{ parameters}   &f(x) &= \beta_0 + \beta_1x + \beta_2x^2 + \varepsilon \\
+      & \vdots                 &     &\vdots \\
+      & n-1 \text{ parameters} &f(x) &= \beta_0 + \beta_1x + \beta_2x^2 + \dots + \beta_{n-1}x^{n-1} + \varepsilon \\
+    \end{align*}
+    You could choose the model with the highest number of parameters; this model would explain all the variance of the training data ($R^2=1$) yet it would be very complex and perform badly with new data points. On the other hand a model with a lower number of parameters would explain less of the variance of the training data, yet it could perform better with new data points.
 
-      % TODO Add image of bias graph
+    % TODO Add image of bias graph
 
-      Keeping in mind that $Y$ is random and that $\hat{f}$ is a random variable estimated from the data,
-      when using the general formula to determine how well a model performs at generic $\vec{X}$, we notice:
-      \begin{align*}
-        E[(Y&-\hat{f}(\vec{X}))^2 \,|\, \vec{X} = \vec{x}\,] = \\
-        & = E[(f(\vec{X}) + \varepsilon - \hat{f}(\vec{X}))^2] 
-        & \text{since } Y = f(\vec{X}) + \varepsilon \\
-        & = E[(f(\vec{X}) + \varepsilon - \hat{f}(\vec{X}) + E[\hat{f}(\vec{X})] - E[\hat{f}(\vec{X})])^2]
-        & \text{since } E[\hat{f}(\vec{X})] - E[\hat{f}(\vec{X})] = 0\\
-        & = E[((f(\vec{X}) - E[\hat{f}(\vec{X})])+ \varepsilon + (E[\hat{f}(\vec{X})] - \hat{f}(\vec{X})))^2]
-        & \text{grouping}\\
-        & = E[(f(\vec{X}) - E[\hat{f}(\vec{X})])^2] + E[\varepsilon^2] + E[(E[\hat{f}(\vec{X})] - \hat{f}(\vec{X}))^2] \, +
-        & \\
-        & \;\;\;\, + 2E[(f(\vec{X}) - E[\hat{f}(\vec{X})])\,\varepsilon] \, + & \\
-        & \;\;\;\, + 2E[(f(\vec{X}) - E[\hat{f}(\vec{X})])(E[\hat{f}(\vec{X})] - \hat{f}(\vec{X}))] \, + 
-        & \text{solving the square and}\\
-        & \;\;\;\, + 2E[(E[\hat{f}(\vec{X})] - \hat{f}(\vec{X}))\,\varepsilon] \,
-        & \text{dividing the expectations}\\
-      \end{align*}
+    Keeping in mind that $Y$ is random and that $\hat{f}$ is a random variable estimated from the data,
+    when using the general formula to determine how well a model performs at generic $\vec{X}$, we notice:
+    \begin{align*}
+      E[(Y&-\hat{f}(\vec{X}))^2 \,|\, \vec{X} = \vec{x}\,] = \\
+      & = E[(f(\vec{X}) + \varepsilon - \hat{f}(\vec{X}))^2] 
+      & \text{since } Y = f(\vec{X}) + \varepsilon \\
+      & = E[(f(\vec{X}) + \varepsilon - \hat{f}(\vec{X}) + E[\hat{f}(\vec{X})] - E[\hat{f}(\vec{X})])^2]
+      & \text{since } E[\hat{f}(\vec{X})] - E[\hat{f}(\vec{X})] = 0\\
+      & = E[((f(\vec{X}) - E[\hat{f}(\vec{X})])+ \varepsilon + (E[\hat{f}(\vec{X})] - \hat{f}(\vec{X})))^2]
+      & \text{grouping}\\
+      & = E[(f(\vec{X}) - E[\hat{f}(\vec{X})])^2] + E[\varepsilon^2] + E[(E[\hat{f}(\vec{X})] - \hat{f}(\vec{X}))^2] \, +
+      & \\
+      & \;\;\;\, + 2E[(f(\vec{X}) - E[\hat{f}(\vec{X})])\,\varepsilon] \, + & \\
+      & \;\;\;\, + 2E[(f(\vec{X}) - E[\hat{f}(\vec{X})])(E[\hat{f}(\vec{X})] - \hat{f}(\vec{X}))] \, + 
+      & \text{solving the square and}\\
+      & \;\;\;\, + 2E[(E[\hat{f}(\vec{X})] - \hat{f}(\vec{X}))\,\varepsilon] \,
+      & \text{dividing the expectations}\\
+    \end{align*}
 
-      But notice that:
-      \begin{align*}
-        E[(f(\vec{X}) - E[\hat{f}(\vec{X})])\,\varepsilon] 
-        & = E[\varepsilon](f(\vec{X}) - E[\hat{f}(\vec{X})]) 
-        & \text{since } f(\vec{X}) - E[\hat{f}(\vec{X})] \text{ is constant}\\
-        & = 0
-        & \text{since } E[\varepsilon] = 0 \\
-      \end{align*}
-      \begin{align*}
-        E[(f(\vec{X}) & - E[\hat{f}(\vec{X})])(E[\hat{f}(\vec{X})] - \hat{f}(\vec{X}))] = \\
-                      & = (f(\vec{X}) - E[\hat{f}(\vec{X})])E[E[\hat{f}(\vec{X})] - \hat{f}(\vec{X})]
-                      & \text{since } f(\vec{X}) - E[\hat{f}(\vec{X})] \text{ is constant} \\
-                      & = (f(\vec{X}) - E[\hat{f}(\vec{X})])E[ \hat{f}(\vec{X}) - \hat{f}(\vec{X})]
-                      & \text{since } \hat{f}(\vec{X}) \text{ is a constant} \\
-                      & = (f(\vec{X}) - E[\hat{f}(\vec{X})])E[0] \\
-                      & = 0
-      \end{align*}
-      \begin{align*}
-        E[(E[\hat{f}(\vec{X})] - \hat{f}(\vec{X}))\,\varepsilon]
-        & = E[\varepsilon]E[E[\hat{f}(\vec{X})] - \hat{f}(\vec{X})]
-        & \text{since } \varepsilon \perp \vec{X} \implies E[\varepsilon\vec{X}] = E[\varepsilon]E[\vec{X}]\\
-        & = 0
-        & \text{since } E[\varepsilon] = 0 \\
-      \end{align*}
-      
-      Therefore we can simplify as:
-      \begin{align*}
-      E[(Y-\hat{f}(\vec{X}))^2 \,|\, \vec{X} = \vec{x}\,]
-      & = E[(f(\vec{X}) - E[\hat{f}(\vec{X})])^2] &+ &E[\varepsilon^2] &+ &E[(E[\hat{f}(\vec{X})] - \hat{f}(\vec{X}))^2] \\
-      & = f(\vec{X}) - E[\hat{f}(\vec{X})])^2 &+ &Var(\varepsilon) &+ &Var(\hat{f}(\vec{X})) 
-      \end{align*} 
-      Where:
-      \begin{itemize}
-        \item $f(\vec{X}) - E[\hat{f}(\vec{X})])^2$ is the bias
-        \item $Var(\varepsilon)$ is the irreducible error
-        \item $Var(\hat{f}(\vec{X}))$ is the variance of the model
-      \end{itemize}
-      \textbf{Bias} on the other hand, bias refers to the error that is introduced by approximating a problem, which may be extremely complicated, by a much
-simpler model. If an estimated model performs well on the training data but it does not perform well on new data, the estimated model has high bias. If an estimated model performs well on multiple data sets, the estimated model has low bias. High bias means that an estimated model is far from the real model. \\
-      \textbf{Variance} refers instead to the amount by which $\hat{f}$ would change if we
-estimated it using a different training data set. Ideally, the $\hat{f}$ calculated 
-through different datasets should be not significantly different. The more flexible models are generally more influenced
-by a change of dataset. \\
-      In order to minimize the expected error, we need to achieve low bias and low variance. In practice, one needs to find a good trade-off between bias and variance, since reducing one often involves increasing the other. In general:
-      \begin{itemize}
-        \item A \textbf{simpe model} has high bias (it is far from the real model) and low variance (when fitting using different training data you get similar estimated parameters).
-        \item A \textbf{complex model} has low bias and high variance.
-      \end{itemize}
-      Both in parametric and non-parametric methods, you generally have at least one \textbf{tuning parameter}, which is a parameter that can be tweaked (for instance the degree of the polinomial) in order to choose the balance between bias and variance.
+    But notice that:
+    \begin{align*}
+      E[(f(\vec{X}) - E[\hat{f}(\vec{X})])\,\varepsilon] 
+      & = E[\varepsilon](f(\vec{X}) - E[\hat{f}(\vec{X})]) 
+      & \text{since } f(\vec{X}) - E[\hat{f}(\vec{X})] \text{ is constant}\\
+      & = 0
+      & \text{since } E[\varepsilon] = 0 \\
+    \end{align*}
+    \begin{align*}
+      E[(f(\vec{X}) & - E[\hat{f}(\vec{X})])(E[\hat{f}(\vec{X})] - \hat{f}(\vec{X}))] = \\
+                    & = (f(\vec{X}) - E[\hat{f}(\vec{X})])E[E[\hat{f}(\vec{X})] - \hat{f}(\vec{X})]
+                    & \text{since } f(\vec{X}) - E[\hat{f}(\vec{X})] \text{ is constant} \\
+                    & = (f(\vec{X}) - E[\hat{f}(\vec{X})])E[ \hat{f}(\vec{X}) - \hat{f}(\vec{X})]
+                    & \text{since } \hat{f}(\vec{X}) \text{ is a constant} \\
+                    & = (f(\vec{X}) - E[\hat{f}(\vec{X})])E[0] \\
+                    & = 0
+    \end{align*}
+    \begin{align*}
+      E[(E[\hat{f}(\vec{X})] - \hat{f}(\vec{X}))\,\varepsilon]
+      & = E[\varepsilon]E[E[\hat{f}(\vec{X})] - \hat{f}(\vec{X})]
+      & \text{since } \varepsilon \perp \vec{X} \implies E[\varepsilon\vec{X}] = E[\varepsilon]E[\vec{X}]\\
+      & = 0
+      & \text{since } E[\varepsilon] = 0 \\
+    \end{align*}
+    
+    Therefore we can simplify as:
+    \begin{align*}
+    E[(Y-\hat{f}(\vec{X}))^2 \,|\, \vec{X} = \vec{x}\,]
+    & = E[(f(\vec{X}) - E[\hat{f}(\vec{X})])^2] &+ &E[\varepsilon^2] &+ &E[(E[\hat{f}(\vec{X})] - \hat{f}(\vec{X}))^2] \\
+    & = f(\vec{X}) - E[\hat{f}(\vec{X})])^2 &+ &Var(\varepsilon) &+ &Var(\hat{f}(\vec{X})) 
+    \end{align*} 
+    Where:
+    \begin{itemize}
+      \item $f(\vec{X}) - E[\hat{f}(\vec{X})])^2$ is the bias
+      \item $Var(\varepsilon)$ is the irreducible error
+      \item $Var(\hat{f}(\vec{X}))$ is the variance of the model
+    \end{itemize}
+    \textbf{Bias} refers to the error that is introduced by approximating a problem, which may be extremely complicated, by a much
+    simpler model. If an estimated model performs well on the training data but it does not perform well on new data, the estimated model has high bias. If an estimated model performs well on multiple data sets, the estimated model has low bias. High bias means that an estimated model is far from the real model. \\
+    \textbf{Variance} refers instead to the amount by which $\hat{f}$ would change if we
+    estimated it using a different training data set. Ideally, the $\hat{f}$ calculated 
+    through different datasets should be not significantly different. The more flexible models are generally more influenced
+    by a change of dataset. \\
+    In order to minimize the expected error, we need to achieve low bias and low variance. In practice, one needs to find a good trade-off between bias and variance, since reducing one often involves increasing the other. In general:
+    \begin{itemize}
+      \item A \textbf{simpe model} has high bias (it is far from the real model) and low variance (when fitting using different training data you get similar estimated parameters).
+      \item A \textbf{complex model} has low bias and high variance.
+    \end{itemize}
+    Both in parametric and non-parametric methods, you generally have at least one \textbf{tuning parameter}, which is a parameter that can be tweaked (for instance the degree of the polinomial) in order to choose the balance between bias and variance.
