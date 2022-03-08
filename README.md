@@ -5,4 +5,4 @@ To get the notes simply download the .pdf file.
 
 # Lectures
 Already added: 28-02, 02-03
-Not added yet: 08-03
+Not added yet: 07-03
