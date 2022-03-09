@@ -1,0 +1,203 @@
+% TODO Add images
+% TODO This and the previous chapter will eventually be merged 
+\chapter{Statistical decision theory II}
+  Just like in the regression setting, there are parametric and non-parametric methods in a classification setting too, these methods being:
+  \begin{itemize}
+    \item \textbf{logistic regression} (parametric classification)
+    \item \textbf{K nearest neighbour} (non-parametric classification)
+  \end{itemize}
+
+  \section{K nearest neighbour for classification}
+    K nearest neighbour is a non-parametric method for classification, meaning it allows to estimate the probability of an observation belonging to each of the classes. Formally this can be written as:
+
+    $$P(Y = j | \vec{X} = \vec{x}_0), \; \text{ for } j = 1, \dots, C$$ 
+
+    Where:
+    \begin{itemize}
+      \item $\vec{x}_0$ is the test observation
+      \item $j$ is a specific class
+      \item $C$ is the number of classes
+    \end{itemize}
+    
+    $K$ is a positive integer and represents the number of training data points closest to the observation data point to consider when classifying. $K$ is called \textbf{tuning parameter}, meaning that it can be tweaked in order to change how the model works; notice that the model is still non-parametric since $K$ does not depend on the training data points.
+
+    In order to use this method you have to: 
+    \begin{enumerate}
+      \item \textbf{identify the K training observations} that are closest (according to some distance, typically we consider the Eucledian distance) to $\vec{x}_0$. These observations  are then indexed with $\vec{N}_0$
+
+      \item \textbf{compute the probability of the observation to belong to each of the classes} using the following formula:
+
+      $$
+      \hat{P(Y = j | \vec{X} = \vec{x}_0)} = \frac{1}{k}\sum_{i \in \vec{N}_0}{I(y_i = j)},\;
+      \text{ where } j = 1, \dots, C
+      $$
+
+      Put into words, the equation above means: compute the probability that, given a test observation $\vec{x}_0$, it belongs to a specific class $j$ by dividing the number of neighbours belonging to that class by the number of neighbours ($K$). Repeat for each class.
+    \end{enumerate} 
+
+    %TODO Add image
+
+    \subsection{Bias-Variance trade off in K nearest neighbour classification}
+      The tuning parameter $K$ relates to the complexity of the model and it is the determinant to balance the bias and the variance of the model. Usually the value of $K$ is chosen using some training data. 
+      Intuitively (NOT formally), the model space could be considered as an area of dimension $n$ which is divided in regions containing $k$ training points, therefore you have $\frac{n}{k}$regions, hence:
+      \begin{itemize}
+        \item if \textbf{K is small}, then there are many small regions in the space and the model is complex. For this reason, if we change $\vec{x}_0$ with another value, the decision surface position changes quite a lot; if K is too small, the model could be overfitting and thus perform poorly with new test data points (low bias, high variance).
+        \item if \textbf{K is large}, then there are few big regions in the space and the model is simple. For this reason, if we change $\vec{x}_0$ with another value, the decision surface position will barely change; if K is too big, the model will give similar results for many different values of $\vec{x}_0$ (high bias, low variance).
+      \end{itemize}
+
+  %TODO Add images
+
+  \section{Logistic regression}
+    \subsection{Why we cannot use linear regression in classification setting}
+    \textbf{Example 1:} We want to predict the medical condition of a patient in the emergency room based on their symptoms. Assume that $Y$ takes only 3 possible values:
+    $$
+    Y = \begin{cases}
+          1 \text{ if stroke} \\
+	      2 \text{ if overdose} \\
+	      3 \text{ if seizures} \\
+        \end{cases}
+    $$
+    %TODO Add image
+    A linear regression may seem to work, but you have some problems:
+    \begin{itemize}
+      \item If the order of the data points changes, the model changes.
+      \item We are arbitrarely assigning an order to not necessarely ordered classes.
+      \item We are imposing an arbitrary distance between the categories. 
+    \end{itemize}
+
+    \textbf{Example 2:} Assume that $Y$ from the previous example only takes 2 values:
+    $$
+    Y = \begin{cases}
+          0 \text{ if stroke} \\
+	      1 \text{ if overdose} \\
+        \end{cases}
+    $$
+    In this case $Y$ is a random variable described by a bernoulli distribution with some probability $p$ of taking the value 1; therefore 
+    $$
+    Y = \begin{cases}
+          1 & p \\
+	      0 & 1-p
+        \end{cases}
+    $$
+    which corresponds to the following probability mass function
+    $$f(y) = p^y(1-p)^{1-y}, \; y=0,1$$
+    which has for expected value
+    $$E[Y] = 0 \cdot (1-p) + 1 \cdot p = p$$
+    %TODO Add image maybe, do not know if needed
+
+    Given these premises, you can write:
+    $$E[Y|\vec{X} = \vec{x}] = p(1|\vec{x}) = \beta_0 + \beta_1 x_1 + \dots + \beta_px_p$$
+    Or considering just the bernoulli case:
+    $$\hat{E[Y|\vec{X} = \vec{x}]} = \hat{\beta}_0 + \hat{\beta}_1x_1$$
+    But notice that:
+    \begin{itemize}
+      \item $p(1|\vec{x}) \in (0, 1)$, so the probability should go from 0 to 1
+      \item $\beta_0 + \beta_1 x_1 + \dots + \beta_px_p \in (-\infty, +\infty)$, yet using linear regression the probability spans over the entirety of $\mathbb{R}$.
+    \end{itemize}
+    Therefore we must find a way to normalize the probability in the range $(0,1)$.
+    
+    \subsection{Characteristics of the logistic function}
+    \textbf{Logistic regression} solves the problem of normalizing the probability $p(1|\vec{x})$ in a range $(0,1)$ by utilizing a function of the probability, namely $g$, such that
+    $$g(p(1|\vec{x})) = \beta_0 + \beta_1 x_1 + \dots + \beta_px_p = \vec{\beta}^t\vec{x}$$
+    
+    Therefore we must find this function 
+    $$p(1|\vec{x}) = \frac{e^{\beta_0 + \beta_1 x_1 + \dots + \beta_p x_p}}
+                          {1+e^{\beta_0 + \beta_1 x_1 + \dots + \beta_p x_p}}$$
+
+
+\textbf{logistic function} (also named sigmoid function or activation function)
+
+- between 0 and 1
+- sigmoid shape, intercept in $y=0.5$
+- if beta1 = -1, other direction
+
+\begin{align*}
+  p(1|\vec{x}) & = \frac{e^{\beta_0 + \beta_1 x_1}} {1+e^{\beta_0 + \beta_1 x_1}}
+               & \text{binomial case for simplicity} \\
+               & = \frac{e^{\beta_0 + \beta_1 x_1}} {e^0+e^{\beta_0 + \beta_1 x_1}}
+               & \text{reorganizing for clarity} \\
+               & = \frac{1}{e^{\beta_0 + \beta_1 x_1}} \cdot \frac{e^{\beta_0 + \beta_1 x_1}}{\frac{e^0}{e^{\beta_0 + \beta_1 x_1}} + 1}
+               & \text{by collecting } e^{\beta_0 + \beta_1 x_1} \text{ from the denominator}\\
+               & = \frac{1}{\frac{e^0}{e^{\beta_0 + \beta_1 x_1}} + 1} 
+               & \text{simplifying}\\ 
+               & = \frac{1}{1 + e^{-\beta_0 - \beta_1 x_1}}
+               & \text{since } \frac{a^x}{a^y} = a^{x-y}
+\end{align*}
+
+% TODO Add image
+\begin{align*}
+  \text{Odds } &= \frac{p(1|\vec{x})}{1 - p(1|\vec{x})}
+               & \text{}\\
+               &= \frac{\frac{e^{\vec{\beta}^t\vec{x}}}{1 + e^{\vec{\beta}^t\vec{x}}}}
+                       {1 - \frac{e^{\vec{\beta}^t\vec{x}}}{1 + e^{\vec{\beta}^t\vec{x}}}}
+               & \text{}\\
+               &= \frac{\frac{e^{\vec{\beta}^t\vec{x}}}{1 + e^{\vec{\beta}^t\vec{x}}}}
+                       {\frac{1 + e^{\vec{\beta}^t\vec{x}} - e^{\vec{\beta}^t\vec{x}}}{1 + e^{\vec{\beta}^t\vec{x}}}}
+               & \text{}\\
+               &= \frac{\frac{e^{\vec{\beta}^t\vec{x}}}{1 + e^{\vec{\beta}^t\vec{x}}}}
+                       {\frac{1}{1 + e^{\vec{\beta}^t\vec{x}}}}
+               & \text{}\\
+               &= \frac{e^{\vec{\beta}^t\vec{x}}}{1 + e^{\vec{\beta}^t\vec{x}}} \cdot
+                       \frac{1 + e^{\vec{\beta}^t\vec{x}}}{1}
+               & \text{}\\
+               &= e^{\vec{\beta}^t\vec{x}}
+               & \text{}\\
+\end{align*}
+
+$$
+\log\left(\frac{p(1|\vec{x})}{1 - p(1|\vec{x})}\right) 
+= \beta_0 + \beta_1 x_1 + \dots + \beta_px_p 
+= \vec{\beta}^t\vec{x}
+$$
+log-odds, logit, function(g)
+
+\section{Logistic regression general}
+So a logistic regression model is defined as follows:
+$$Y|\vec{X} = \vec{x} \sim Bernoulli(p(1|\vec{x}))$$
+$$\log\left(\frac{p(1|\vec{x})}{1 - p(1|\vec{x})}\right) 
+= \beta_0 + \beta_1 x_1 + \dots + \beta_px_p $$
+
+A one unit increase in xjinduces a change in the log-odds of bj
+
+Example: A single predictor x whih is binary
+\begin{align*}
+\log(\text{odds ratio})
+  & = \log\left(\frac{p(1|X=x_0+1)}{1-p(1|X=x_0+1)}\right)-\log\left(\frac{p(1|X=x_0)}{1-p(1|X=x_0)}\right)\\
+  & = \beta_0 + \beta_1 (x_0 + 1) - \beta_0 - \beta_1x_0 \\
+  & = \beta_1
+\end{align*}
+
+\begin{align*}
+\text{odds ratio}
+  & = \frac{\frac{p(1|X=x_0+1)}{1-p(1|X=x_0+1)}}{\frac{p(1|X=x_0)}{1-p(1|X=x_0)}} \\
+  & = \frac{e^{\beta_0 + \beta_1 (x_0 + 1)}}{e^{\beta_0 + \beta_1 x_0}}\\
+  & = \frac{e^{\beta_0 + \beta_1x_0 + \beta_1}}{e^{\beta_0 + \beta_1 x_0}} \\
+  & = e^{\beta_1}
+\end{align*}
+
+\section{Parameter estimation}
+% given data $(x_i, y_i)$, i=1...n, estimate beta0, beta1.... betap
+% it has to be calculated the maximum likelihood.
+% Y binary, so Y|X = x which is Bernoulli(p(1|x)) distributed p^y(1-p)^1-y ....
+$$Y|\vec{X} = \vec{x} \sim Bernoulli(p(1|\vec{x})), \; f(y|\vec{x}) = p(1|\vec{x})^y(1-p(1|\vec{x}))^{1-y}$$
+
+\begin{align*}
+L(\vec{\beta}) = \prod_{i=1}^{n}f(y_i|\vec{x}_i) = \prod_{i=1}^{n}p(1|\vec{x}_i)^{y_i}(1-p(1|\vec{x}_i))^{1-y_i}
+\end{align*}
+
+\begin{align*}
+l(\vec{\beta}) 
+&=\sum_{i=1}^{n}[y_i\log(p(1|\vec{x}_i))+(1-y_i)\log(1-p(1|\vec{x}_i))]\\
+&=\sum_{i=1}^{n}\left[y_i\log\left(\frac{p(1|\vec{x}_i))}{1-p(1|\vec{x}_i))}\right)+\log(1-p(1|\vec{x}_i))\right]\\
+&=\sum_{i=1}^{n}\left[y_i\vec{\beta}^t\vec{x}_i+\log\left(1-\frac{e^{\vec{\beta}^t\vec{x}_i}}{1+e^{\vec{\beta}^t\vec{x}_i}}\right)\right]\\
+&=\sum_{i=1}^{n}\left[y_i\vec{\beta}^t\vec{x}_i+\log\left(\frac{1}{1+e^{\vec{\beta}^t\vec{x}_i}}\right)\right]\\
+&=\sum_{i=1}^{n}\left[y_i\vec{\beta}^t\vec{x}_i-\log\left(1+e^{\vec{\beta}^t\vec{x}_i}\right)\right]\\
+\end{align*}
+
+Maximizing likelihood numerically
+\begin{align*}
+\frac{\partial l(\beta)}{\partial \beta_j}
+&=\frac{\partial}{\partial \beta_j}\left(\sum_{i=1}^{n}\left[y_i\vec{\beta}^t\vec{x}_i-\log\left(1+e^{\vec{\beta}^t\vec{x}_i}\right)\right]\right) \; j = 0,\,\dots,\,p \\
+&=\sum_{i=1}^{n}\left[y_ix_{ij}-\frac{e^{\vec{\beta}^t\vec{x}_i}}{1+e^{\vec{\beta}^t\vec{x}_i}}x_{ij}\right]\\
+&=\sum_{i=1}^{n}\left[y_ix_{ij}-p(1|\vec{x}_i)x_{ij}\right]\\
+\end{align*}
