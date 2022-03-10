@@ -94,110 +94,150 @@
       \item $p(1|\vec{x}) \in (0, 1)$, so the probability should go from 0 to 1
       \item $\beta_0 + \beta_1 x_1 + \dots + \beta_px_p \in (-\infty, +\infty)$, yet using linear regression the probability spans over the entirety of $\mathbb{R}$.
     \end{itemize}
-    Therefore we must find a way to normalize the probability in the range $(0,1)$.
+    Therefore we must find a way to normalize the regression in the range $(0,1)$.
     
-    \subsection{Characteristics of the logistic function}
-    \textbf{Logistic regression} solves the problem of normalizing the probability $p(1|\vec{x})$ in a range $(0,1)$ by utilizing a function of the probability, namely $g$, such that
+    \subsection{Characteristics of the logistic regression}
+    \textbf{Logistic regression} solves the problem of normalizing the regression in a range $(0,1)$ by utilizing a function of the probability $p(1|\vec{x})$, namely $g$, such that
     $$g(p(1|\vec{x})) = \beta_0 + \beta_1 x_1 + \dots + \beta_px_p = \vec{\beta}^t\vec{x}$$
     
-    Therefore we must find this function 
+    Logistic regression uses the \textbf{logistic function} (also named sigmoid function or activation function), which is defined as
     $$p(1|\vec{x}) = \frac{e^{\beta_0 + \beta_1 x_1 + \dots + \beta_p x_p}}
                           {1+e^{\beta_0 + \beta_1 x_1 + \dots + \beta_p x_p}}$$
+    and it has the following properties:
+    \begin{itemize}
+      \item Its codomain corresponds to the interval $(0,1)$
+      \item It has sigmoid shape with intercept in $y=0.5$
+      \item In the binomial case, if $\beta{1} > 0$ then the function is increasing, else it is decreasing.
+    \end{itemize}
+    
+    The $g$ function is the inverse of the conversion from linear regression to logistic function.
+    
+    In the binomial case, the logistic function can be written as:
+	\begin{align*}
+	  p(1|\vec{x}) & = \frac{e^{\beta_0 + \beta_1 x_1}} {1+e^{\beta_0 + \beta_1 x_1}}
+	               & \text{binomial case for simplicity} \\
+	               & = \frac{e^{\beta_0 + \beta_1 x_1}} {e^0+e^{\beta_0 + \beta_1 x_1}}
+	               & \text{reorganizing for clarity} \\
+	               & = \frac{1}{e^{\beta_0 + \beta_1 x_1}} \cdot \frac{e^{\beta_0 + \beta_1 x_1}}{\frac{e^0}{e^{\beta_0 + \beta_1 x_1}} + 1}
+	               & \text{by collecting } e^{\beta_0 + \beta_1 x_1} \text{ from the denominator}\\
+	               & = \frac{1}{\frac{e^0}{e^{\beta_0 + \beta_1 x_1}} + 1} 
+	               & \text{simplifying}\\ 
+	               & = \frac{1}{1 + e^{-\beta_0 - \beta_1 x_1}}
+	               & \text{since } \frac{a^x}{a^y} = a^{x-y}
+	\end{align*}
 
+    % TODO Add image
+	
+    Let us define a quantity called \textbf{odds}, which is the ratio between positive and negative outcomes.
+	\begin{align*}
+	  \text{Odds } &= \frac{p(1|\vec{x})}{1 - p(1|\vec{x})}
+	               & \text{by definition}\\
+	               &= \frac{\frac{e^{\vec{\beta}^t\vec{x}}}{1 + e^{\vec{\beta}^t\vec{x}}}}
+	                       {1 - \frac{e^{\vec{\beta}^t\vec{x}}}{1 + e^{\vec{\beta}^t\vec{x}}}}
+	               & \text{since } p(1|\vec{x}) = \vec{\beta}^t\vec{x} \\
+	               &= \frac{\frac{e^{\vec{\beta}^t\vec{x}}}{1 + e^{\vec{\beta}^t\vec{x}}}}
+	                       {\frac{1 + e^{\vec{\beta}^t\vec{x}} - e^{\vec{\beta}^t\vec{x}}}{1 + e^{\vec{\beta}^t\vec{x}}}}
+	               & \text{minimum common denominator}\\
+	               &= \frac{\frac{e^{\vec{\beta}^t\vec{x}}}{1 + e^{\vec{\beta}^t\vec{x}}}}
+	                       {\frac{1}{1 + e^{\vec{\beta}^t\vec{x}}}}
+	               & \text{simplifying}\\
+	               &= \frac{e^{\vec{\beta}^t\vec{x}}}{1 + e^{\vec{\beta}^t\vec{x}}} \cdot
+	                       \frac{1 + e^{\vec{\beta}^t\vec{x}}}{1}
+	               & \text{reorganizing}\\
+	               &= e^{\vec{\beta}^t\vec{x}}
+	               & \text{simplifying}\\
+	\end{align*}
+    
+    The predictor for this measure is called \textbf{log-odds} or \textbf{logit} (it is the $g$ function from before) is obtained applying a logarithmic tranformation, hence:
+    $$
+    \log\left(\frac{p(1|\vec{x})}{1 - p(1|\vec{x})}\right) 
+    = \beta_0 + \beta_1 x_1 + \dots + \beta_px_p 
+    = \vec{\beta}^t\vec{x}
+    $$
+    % TODO Add image of logit
+    
+    The formal definition of a logistic regression model (assuming the random variable to be bernoulli distributed) then becomes:
 
-\textbf{logistic function} (also named sigmoid function or activation function)
+    $$Y|\vec{X} = \vec{x} \sim Bernoulli(p(1|\vec{x}))$$
+    $$\log\left(\frac{p(1|\vec{x})}{1 - p(1|\vec{x})}\right) 
+    = \beta_0 + \beta_1 x_1 + \dots + \beta_px_p $$
+    
+    The coefficients can be interpeted as follows: a one-unit increase in $X_j$ (while everithing else is kept constant) induces a change in the log-odds of $\beta_j$ (while it induces a multiple factor of $e^{\beta_j}$ for the odds).
 
-- between 0 and 1
-- sigmoid shape, intercept in $y=0.5$
-- if beta1 = -1, other direction
+    \subsection{Example of logistic regression}
+    \textbf{Example}: Logistic regression for a single predictor $X$ which is binary.
 
-\begin{align*}
-  p(1|\vec{x}) & = \frac{e^{\beta_0 + \beta_1 x_1}} {1+e^{\beta_0 + \beta_1 x_1}}
-               & \text{binomial case for simplicity} \\
-               & = \frac{e^{\beta_0 + \beta_1 x_1}} {e^0+e^{\beta_0 + \beta_1 x_1}}
-               & \text{reorganizing for clarity} \\
-               & = \frac{1}{e^{\beta_0 + \beta_1 x_1}} \cdot \frac{e^{\beta_0 + \beta_1 x_1}}{\frac{e^0}{e^{\beta_0 + \beta_1 x_1}} + 1}
-               & \text{by collecting } e^{\beta_0 + \beta_1 x_1} \text{ from the denominator}\\
-               & = \frac{1}{\frac{e^0}{e^{\beta_0 + \beta_1 x_1}} + 1} 
-               & \text{simplifying}\\ 
-               & = \frac{1}{1 + e^{-\beta_0 - \beta_1 x_1}}
-               & \text{since } \frac{a^x}{a^y} = a^{x-y}
-\end{align*}
+    To compute the change of the log-odds for a one-unit change of $X$ we compute
+    \begin{align*}
+    \log(\text{odds ratio})
+      & = \log\left(\frac{p(1|X=x_1+1)}{1-p(1|X=x_1+1)}\right)-\log\left(\frac{p(1|X=x_1)}{1-p(1|X=x_1)}\right)
+      & \text{log odds in 1 minus log odds in 0}\\
+      & = \beta_0 + \beta_1 (x_1 + 1) - \beta_0 - \beta_1x_1 
+      & \text{by definition of logistic regression}\\
+      & = \beta_1
+      & \text{simplifying}
+    \end{align*}
+    This quantity is called \textbf{log(odds ratio)} since the subtraction of two logaritms in the same base is equal to the logarithm of the ratio of the arguments. Notice that, as expected, a one unit increase of the value of $x_1$ results in an increment of $\beta_1$.
 
-% TODO Add image
-\begin{align*}
-  \text{Odds } &= \frac{p(1|\vec{x})}{1 - p(1|\vec{x})}
-               & \text{}\\
-               &= \frac{\frac{e^{\vec{\beta}^t\vec{x}}}{1 + e^{\vec{\beta}^t\vec{x}}}}
-                       {1 - \frac{e^{\vec{\beta}^t\vec{x}}}{1 + e^{\vec{\beta}^t\vec{x}}}}
-               & \text{}\\
-               &= \frac{\frac{e^{\vec{\beta}^t\vec{x}}}{1 + e^{\vec{\beta}^t\vec{x}}}}
-                       {\frac{1 + e^{\vec{\beta}^t\vec{x}} - e^{\vec{\beta}^t\vec{x}}}{1 + e^{\vec{\beta}^t\vec{x}}}}
-               & \text{}\\
-               &= \frac{\frac{e^{\vec{\beta}^t\vec{x}}}{1 + e^{\vec{\beta}^t\vec{x}}}}
-                       {\frac{1}{1 + e^{\vec{\beta}^t\vec{x}}}}
-               & \text{}\\
-               &= \frac{e^{\vec{\beta}^t\vec{x}}}{1 + e^{\vec{\beta}^t\vec{x}}} \cdot
-                       \frac{1 + e^{\vec{\beta}^t\vec{x}}}{1}
-               & \text{}\\
-               &= e^{\vec{\beta}^t\vec{x}}
-               & \text{}\\
-\end{align*}
+    If we instead consider the same increment for the \textbf{odds ratio} (the exponential of the previous function), we get
 
-$$
-\log\left(\frac{p(1|\vec{x})}{1 - p(1|\vec{x})}\right) 
-= \beta_0 + \beta_1 x_1 + \dots + \beta_px_p 
-= \vec{\beta}^t\vec{x}
-$$
-log-odds, logit, function(g)
+    \begin{align*}
+      \text{odds ratio}
+      & = \frac{\frac{p(1|X=x_0+1)}{1-p(1|X=x_0+1)}}{\frac{p(1|X=x_0)}{1-p(1|X=x_0)}} 
+      & \text{odds in 1 divided by odds in 0}\\
+      & = \frac{e^{\beta_0 + \beta_1 (x_0 + 1)}}{e^{\beta_0 + \beta_1 x_0}}
+      & \text{using the fact that } \log\left(\frac{p(1|\vec{x})}{1 - p(1|\vec{x})}\right)= \vec{\beta}^t\vec{x}\\
+      & = \frac{e^{\beta_0 + \beta_1x_0 + \beta_1}}{e^{\beta_0 + \beta_1 x_0}} 
+      & \text{rearranging}\\
+      & = e^{\beta_1}
+      & \text{since } \frac{x^a}{x^b} = x^{a-b}
+    \end{align*}
+    Therefore we have an increase of $e^{\beta_1}$ as expected.
 
-\section{Logistic regression general}
-So a logistic regression model is defined as follows:
-$$Y|\vec{X} = \vec{x} \sim Bernoulli(p(1|\vec{x}))$$
-$$\log\left(\frac{p(1|\vec{x})}{1 - p(1|\vec{x})}\right) 
-= \beta_0 + \beta_1 x_1 + \dots + \beta_px_p $$
+    \subsection{Parameter estimation in logistic regression}
+    When estimating parameters for non-linear regressions you often get non-closed form expressions, therefore the maximum likelihood(s) for the parameter(s) must be maximised numerically. Notice that, contrarely to linear regression, you cannot use the least square method.
 
-A one unit increase in xjinduces a change in the log-odds of bj
+    For instance, give some training data $(\vec{x}_i, y_i), \; i=1, \dots, n$, we want to estimate $\beta_0, \beta_1, \dots, \beta_p$. To do so we need to compute the maximum likelihood starting from the fact that $Y$ is binary, thus
+    $$Y|\vec{X} = \vec{x} \sim Bernoulli(p(1|\vec{x})), \; f(y|\vec{x}) = p(1|\vec{x})^y(1-p(1|\vec{x}))^{1-y}$$
+    
+    The likelihood conditional to the observations hence is:
+    \begin{align*}
+    L(\vec{\beta}) = \prod_{i=1}^{n}f(y_i|\vec{x}_i) = \prod_{i=1}^{n}p(1|\vec{x}_i)^{y_i}(1-p(1|\vec{x}_i))^{1-y_i}
+    \end{align*}
+    
+    We then compute the log-likelihood and reorganize it in order to make evident its dependence from $\vec{\beta}$:
+    
+    \begin{align*}
+    l(\vec{\beta}) 
+    &=\sum_{i=1}^{n}[y_i\log(p(1|\vec{x}_i))+(1-y_i)\log(1-p(1|\vec{x}_i))]
+    & \text{applying logarithm}\\
+    &=\sum_{i=1}^{n}\left[y_i\log(p(1|\vec{x}_i)) - y_i\log(1-p(1|\vec{x}_i)) +\log(1-p(1|\vec{x}_i))\right]
+    & \text{multiplying}\\
+    &=\sum_{i=1}^{n}\left[y_i\log\left(\frac{p(1|\vec{x}_i))}{1-p(1|\vec{x}_i))}\right)+\log(1-p(1|\vec{x}_i))\right]
+    & \log(a) - \log(b) = \log\left(\frac{a}{b}\right)\\
+    & \text{ but since } \log\left(\frac{p(1|\vec{x})}{1 - p(1|\vec{x})}\right)= \vec{\beta}^t\vec{x} \text{ and } 
+      p(1|\vec{x}) = \frac{e^{\beta_0 + \beta_1 x_1}} {1+e^{\beta_0 + \beta_1 x_1}} &\\
+    &=\sum_{i=1}^{n}\left[y_i\vec{\beta}^t\vec{x}_i+\log\left(1-\frac{e^{\vec{\beta}^t\vec{x}_i}}{1+e^{\vec{\beta}^t\vec{x}_i}  }\right)\right] &\\
+    &=\sum_{i=1}^{n}\left[y_i\vec{\beta}^t\vec{x}_i+\log\left(\frac{1}{1+e^{\vec{\beta}^t\vec{x}_i}}\right)\right]
+    & \text{using mcm and simplifying}\\
+    &=\sum_{i=1}^{n}\left[y_i\vec{\beta}^t\vec{x}_i+\log(1)-\log\left(1+e^{\vec{\beta}^t\vec{x}_i}\right)\right]
+    & \text{dividing the logarithms}\\
+    & =\sum_{i=1}^{n}\left[y_i\vec{\beta}^t\vec{x}_i-\log\left(1+e^{\vec{\beta}^t\vec{x}_i}\right)\right]
+    & \text{since }\log{1} = 0
+    \end{align*}
 
-Example: A single predictor x whih is binary
-\begin{align*}
-\log(\text{odds ratio})
-  & = \log\left(\frac{p(1|X=x_0+1)}{1-p(1|X=x_0+1)}\right)-\log\left(\frac{p(1|X=x_0)}{1-p(1|X=x_0)}\right)\\
-  & = \beta_0 + \beta_1 (x_0 + 1) - \beta_0 - \beta_1x_0 \\
-  & = \beta_1
-\end{align*}
+    We then compute the first derivative in $\vec{\beta}$ (notice that since you want to derive in a vector, you need to take the partial derivatives in each of the elements of the vector):
+    \begin{align*}
+    \frac{\partial l(\beta)}{\partial \beta_j}
+    &=\frac{\partial}{\partial \beta_j}\left(\sum_{i=1}^{n}\left[y_i\vec{\beta}^t\vec{x}_i-\log\left(1+e^{\vec{\beta}^t\vec{x}_i}\right)\right]\right) \; j = 0,\,\dots,\,p \\
+    & \text{ but } \frac{\partial\vec{\beta}^t\vec{x}}{\partial\beta_j} 
+      = \frac{\partial}{\partial\beta_j}(\beta_0 x_{i0} + \dots +\beta_p x_{ip}) = x_{ij} \text{ since the other terms simplify}\\
+    &=\sum_{i=1}^{n}\left[y_ix_{ij}-\frac{e^{\vec{\beta}^t\vec{x}_i}}{1+e^{\vec{\beta}^t\vec{x}_i}}x_{ij}\right] \\
+    & \text{ but } \frac{e^{\vec{\beta}^{t}\vec{x}_i}} {1+e^{\vec{\beta}^{t}\vec{x}_i}} = p(1|\vec{x}) \text{ therefore} \\
+    &=\sum_{i=1}^{n}\left[y_ix_{ij}-p(1|\vec{x}_i)x_{ij}\right]
+    \end{align*}
+    
+    By setting this derivative to zero you obtain $p+1$ equations in $p+1$ parameters, therefore to optimize numerically the function (by solving the equations) you must use an optimization method like \textbf{Newton-Raphson}; the \textit{gml} function in R uses an iterative reweighted least-squares algorithm, which is a variation of the Newton-Raphson method).
 
-\begin{align*}
-\text{odds ratio}
-  & = \frac{\frac{p(1|X=x_0+1)}{1-p(1|X=x_0+1)}}{\frac{p(1|X=x_0)}{1-p(1|X=x_0)}} \\
-  & = \frac{e^{\beta_0 + \beta_1 (x_0 + 1)}}{e^{\beta_0 + \beta_1 x_0}}\\
-  & = \frac{e^{\beta_0 + \beta_1x_0 + \beta_1}}{e^{\beta_0 + \beta_1 x_0}} \\
-  & = e^{\beta_1}
-\end{align*}
-
-\section{Parameter estimation}
-% given data $(x_i, y_i)$, i=1...n, estimate beta0, beta1.... betap
-% it has to be calculated the maximum likelihood.
-% Y binary, so Y|X = x which is Bernoulli(p(1|x)) distributed p^y(1-p)^1-y ....
-$$Y|\vec{X} = \vec{x} \sim Bernoulli(p(1|\vec{x})), \; f(y|\vec{x}) = p(1|\vec{x})^y(1-p(1|\vec{x}))^{1-y}$$
-
-\begin{align*}
-L(\vec{\beta}) = \prod_{i=1}^{n}f(y_i|\vec{x}_i) = \prod_{i=1}^{n}p(1|\vec{x}_i)^{y_i}(1-p(1|\vec{x}_i))^{1-y_i}
-\end{align*}
-
-\begin{align*}
-l(\vec{\beta}) 
-&=\sum_{i=1}^{n}[y_i\log(p(1|\vec{x}_i))+(1-y_i)\log(1-p(1|\vec{x}_i))]\\
-&=\sum_{i=1}^{n}\left[y_i\log\left(\frac{p(1|\vec{x}_i))}{1-p(1|\vec{x}_i))}\right)+\log(1-p(1|\vec{x}_i))\right]\\
-&=\sum_{i=1}^{n}\left[y_i\vec{\beta}^t\vec{x}_i+\log\left(1-\frac{e^{\vec{\beta}^t\vec{x}_i}}{1+e^{\vec{\beta}^t\vec{x}_i}}\right)\right]\\
-&=\sum_{i=1}^{n}\left[y_i\vec{\beta}^t\vec{x}_i+\log\left(\frac{1}{1+e^{\vec{\beta}^t\vec{x}_i}}\right)\right]\\
-&=\sum_{i=1}^{n}\left[y_i\vec{\beta}^t\vec{x}_i-\log\left(1+e^{\vec{\beta}^t\vec{x}_i}\right)\right]\\
-\end{align*}
-
-Maximizing likelihood numerically
-\begin{align*}
-\frac{\partial l(\beta)}{\partial \beta_j}
-&=\frac{\partial}{\partial \beta_j}\left(\sum_{i=1}^{n}\left[y_i\vec{\beta}^t\vec{x}_i-\log\left(1+e^{\vec{\beta}^t\vec{x}_i}\right)\right]\right) \; j = 0,\,\dots,\,p \\
-&=\sum_{i=1}^{n}\left[y_ix_{ij}-\frac{e^{\vec{\beta}^t\vec{x}_i}}{1+e^{\vec{\beta}^t\vec{x}_i}}x_{ij}\right]\\
-&=\sum_{i=1}^{n}\left[y_ix_{ij}-p(1|\vec{x}_i)x_{ij}\right]\\
-\end{align*}
+    From the optimization you get $\hat{\vec{\beta}} = \hat{\beta}_0, \hat{\beta}_1, \dots, \hat{\beta}_p $, which can be used to estimate $p(1|\vec{x})$, since
+    $$\hat{p(1|\vec{x})} = \frac{e^{\hat{\vec{\beta}^t}\vec{x}}}{1+e^{\hat{\vec{\beta}^t}\vec{x}}}$$
