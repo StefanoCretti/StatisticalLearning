@@ -1,8 +1,7 @@
 \chapter{Statistical decision theory}
   
   \section{Definition of statistical decision theory}
-    % TODO Add ref https://www.britannica.com/science/decision-theory-statistics
-    \textbf{Statistical decision theory} is a set of quantitative methods for reaching optimal decisions for well posed problems. Statistical decision theory applies to supervised learning, while it does not apply to unsupervised learning. For most of the course we will focus on supervised learning. 
+    \textbf{Statistical decision theory} is a set of quantitative methods for reaching optimal decisions for well posed problems. Statistical decision theory applies to supervised learning, while it does not apply to unsupervised learning. For most of the course we will focus on supervised learning ( \href{https://www.britannica.com/science/decision-theory-statistics}{decision theory statistics from Britannica}). 
 
   \section{Supervised learning}
     \textbf{Supervised learning} is a set of methods whose objective is, given the observations $(\vec{x}_i, y_i)$ with $i = 1, \dots, n$, to find a rule $\hat{f}$ that allows us to predict $Y$ from $\vec{X}$, meaning that $\hat{Y} = \hat{f}(\vec{X})$. $\hat{f}(\vec{X})$ is thus an approximation of the true rule $f(\vec{X})$. Finding $\hat{f}$ corresponds to training (or fitting) a model using labelled data pairs (both predictors and response values are known).
@@ -13,7 +12,7 @@
       \item \textbf{Classification methods}, in which the response $Y$ is qualitative (categorical). In this case $\hat{f}$ is called \textbf{classifier}.
     \end{itemize}
     
-    The predictors ($\vec{X}$) can take any form, numerical or categorical. In general there no assumptions on the form of the predictors (but not always).
+    The predictors ($\vec{X}$) can take any form, numerical or categorical. In general there are no assumptions on the form of the predictors (but not always).
     
     To evaluate a model you use \textbf{loss functions}, which are functions used to penalize the differences between $Y$ and $f(\vec{X})$. Many loss functions can be used; the choice of a specific loss function determines which function is considered to be the true rule $f(\vec{X})$.
 
