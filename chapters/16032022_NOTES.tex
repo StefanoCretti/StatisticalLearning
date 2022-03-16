@@ -1,0 +1,72 @@
+\section{•}
+
+Simulating data from a linear model \\
+
+\textbf{Example:} Poisson regression\\
+Y_i = Y | Xunder = xiunder) Poisson(mu_i)
+
+	mui = W[Yi]
+	nui = xunderi^t beta
+	
+	where nui is presnet in the interval between -infinity and +infinity
+	
+	canonical link: loh
+	
+	nui = log(mui) > mui = e^nui
+	
+	
+altogether
+Yi Poisson(e^{underxi}^t underbeta)
+
+I ant to generate data from this model, random variables are Y_i
+Fix a value of beta
+nui = beta0 + betai xi where all the values are chosen.
+
+n = 100 an hundred values of x
+
+
+
+in a linear model
+
+y_i = nu_i + \epsilon_i    (signal + noise)
+
+e_i = y_i - nu_i
+
+
+for general linear models
+\begin{itemize}
+ \item 
+\end{itemize}
+
+
+
+\textbf{Pearson Residuals}:
+r_i = \frac{y_i - \mu_i}{\sqrt{Var(y_i) / phi}}
+
+In the case of Poisson, $ \phi = 1 $
+r_i = \frac{y_i - \mu_i}{\sqrt{mu_i}
+
+$ y_i $ cannot go under 0, it can take any large value, residuals can gave an asymmetric distribution
+
+Gaussianity tends to be satisfied for large values of 
+
+
+
+\textbf{Deviance Residuals}
+The Deviance of an ovservation $ i $ is defined as 
+
+$ d_i = 2[li(y_i, y_i) - li(\hat{\mu_i}, y_i) $
+
+$ li(y_i, y_i) $ is the saturated model with $ \hat{\mu_i} = y_i  $
+
+This difference has to be positive. The smaller the value is, the more precise is the model taken in account
+
+
+Deviance = \sum_{i=1}^n d_i
+
+
+r_i^0 = \sqrt{d_i} * sign(y_i - \hat{\mu_i})
+
+where sign is equal to 1 if \hat{\mu_i} < y_i or -1 if \hat{\mu_i} > y_i, and if \hat{\mu_i} = y_i is equal to 0\\
+
+
