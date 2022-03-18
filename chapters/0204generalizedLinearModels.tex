@@ -1,220 +1,208 @@
-Generalized linear models (glm in R)
-Family of models that incluge linear, logistic, poisson regressions and so on. Simple but broad family. 
+\chapter{Generalized linear models}
+  \textbf{Generalized linear models} (GLMs) are a broad family of regression models which includes, for instance, linear, logistic and poisson regressions (and many more). The concept was created by Nelder and Wedderburn in 1972, in order to map into a single framework all regressions models.
+  In general regression models are characterized by:
+  \begin{itemize}
+    \item $Y$: the random \textbf{response variable} you want to predict
+    \item $\vec{X}=(X_1, \dots, X_p)$: a \textbf{vector of random predictors} (generally known)
+  \end{itemize}
+  Notice that, since these models describe the value of $Y$ with respect to the vector $\vec{X}$ ($Y|\vec{X}=\vec{x}$), they do not give information on the actual distribution of $Y$, but rather on the values that it takes conditionally to the values taken by the predictors, which can be written as
+  $$Y_i=(Y|\vec{X}=\vec{x}_i)$$
+  Therefore, if you have $n$ vectors of random predictors, $Y_1, \dots, Y_n$ are independent random variables but not identically distributed.
+  %TODO Add images
 
-In general in regression models
-$Y$ response variable (you want to predict)
-$\vec{X}=(X_1, \dots, X_p)$ also random but you usually have the values
-$Y|\vec{X}=\vec{x}$, Linear models do not describe the actual distribution of Y 
+  \section{From linear models to generalized linear models}
+    Linear models make some implicit assumptions that must be removed in order to generalize.
+    
+    \begin{tabularx}{1\textwidth} { 
+    >{\centering\arraybackslash}X 
+    >{\centering\arraybackslash}X }
 
-% IMAGES
+    \textbf{Linear models} & 
+    \textbf{Generalized linear models} \\
 
-$Y_i=(Y|\vec{X}=\vec{x}_i)$
-xi can be a vector if multiple predictors
-Linear model assumes gaussian distrib 
+    $Y_i \sim N(\mu_i, \sigma^2)$ & 
+    $Y_i \sim f(y_i; \mu_i, \phi)$ \\
 
-$Y_1, \dots, Y_n$ are independent random variables but not identically distributed.
+    $\mu_i = E[Y_i] = E[Y|\vec{X} = \vec{x}_i] = \eta_i$ & 
+    $g(\mu_i) = \eta_i$ \\
 
-Linear model
-\begin{align*}
-  Y_i \sim N(\mu_i, \sigma^2) \text{ with } \\
-  \mu_i=E[Y|\vec{X} = \vec{x}_i] \text{ and } \\
-  \sigma^2 = Var(Y_i) = Var(Y|\vec{X} = \vec{x}_i) \\
-  \text{which are constant (homoskedasticity)} \\ 
-  \mu_i = E[Y_i] = E[Y|\vec{X} = \vec{x}_i] = \eta_i \\
-  \eta_i = \vec{x}_i^t\vec{\beta} = \beta_0x_{i0} + \beta_1x_{i1} + \dots + \beta_px_{ip} \\
-  \text{linear predictor (linear in beta)}
-\end{align*}
-But I would line non normal distribution because many things do not follow it
+    $\eta_i = \vec{x}_i^t\vec{\beta} = \beta_0x_{i0} + \beta_1x_{i1} + \dots + \beta_px_{ip}$ & 
+    $\eta_i = \vec{x}_i^t\vec{\beta}$  \\
+    \end{tabularx}
 
-Generalized form 
-GLM (Nelder and Wedderburn, 1972) Mapped in 1 framework the regressions
-\begin{align*}
-  Y_i \sim f(y_i; \mu_i, \phi) \\
-  g(\mu_i) = \eta_i \\
-  \text{g is the link function} \\
-  \eta_i = \vec{x}_i^t\vec{\beta} \\
-  \text{One choice of f and a choice of g makes a generalized linear model} \\
-  \text{Note: } f = N, \phi = \sigma^2, g = identity \implies LM \\
-\end{align*}
+    First of all, linear models assume that the random variable $Y_i$ is normal distributed, with mean $\mu_i$, meaning that $E[Y|\vec{X}=\vec{x}_i]$, and $\sigma^2 = Var(Y_i) = Var(Y|\vec{X}=\vec{x}_i)$. Notice that the variance is constant, therefore homoskedasticity is assumed. On the other hand, generalized linear models do not make any assumptions on the shape of the distribution of $Y_i$; $Y_i$ is distributed according to some function $f(y_i)$ with the parameters $\mu_i$ and $\phi$. $\phi$ is called \textbf{special parameter} and it may or may not be present in the model.
+    The \textbf{linear predictor} is the function used to predict the outcome of the random variable $Y_i$ knowing some values for the predictor $\vec{X}_i$; in both cases the linear predictor is defined as $\eta_i = \vec{x}_i^t\vec{\beta} = \beta_0x_{i0} + \beta_1x_{i1} + \dots + \beta_px_{ip}$, where $p$ is the number of parameters and the coefficients $\beta_0, \dots, \beta_p$ are the weights for the predictors (therefore the linear predictor is a linear combination in $\vec{\beta}$ of the predictors). The difference is in the relation between $\mu_i$ and $\eta_i$. In linear models $\mu_i$ coincides with $\eta_i$, because assuming a normal distribution $\mu_i = E[Y_i] = E[Y|\vec{X} = \vec{x}_i] = \eta_i$; in generalized linear models $\mu_i$ and $\eta_i$ are related by a \textbf{link function}, which is a function $g$ of $\mu_i$ such that $g(\mu_i) = \eta_i$.
+    A generalized linear model is then a choice of a distribution function $f$ and a link function $g$; for instance, if $f$ is a normal distribution (with $\sigma^2 = \phi$) and $g$ is the identity function (therefore $\mu_i = \eta_i$), we get the linear model. 
+  
+  \section{Exponential dispersion family}
+    The function $f$, describing the distribution of the random variable $Y_i$, needs to be a member of the \textbf{exponential dispersion family} (EDF). A density belonging to the EDF can be written as
+    $$f(y_i;\theta_i,\phi)=\exp\left\{\frac{y_i\theta_i-b(\theta_i)}{a_i(\phi)}+c(y_i;\phi)\right\}$$
+    With:
+    \begin{itemize}
+      \item $f(y_i)$ is a generic density function 
+      \item $\theta_i$ and $\phi$ are some parameters. The values of $\theta_i$ are called canonical parameters.
+      \item $a_i$, $b$ and $c$ are some functions.
+    \end{itemize}
 
-$\phi$ is called special parameter and not always present
-link function needed to link conditional mean to the linear predictor (to normalize in range 0,1)
-$f$ needs to be a member of the exponential dispersion family 
-Density y_i and parameters Mu_i and phi.
-A GLM is a choice of f and g
+    \subsection{Example: normal distribution is a member of the EDF}
+      We want to demonstrate that the normal distribution is a member of the EDF.
+      \begin{align*}
+      f(y_i; \mu_i, \sigma^2)
+        &= \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left\{-\frac{1}{2} \frac{(y_i-\mu_i)^2}{\sigma^2}\right\}
+        & \text{ definition of normal distribution}\\
+        &= \exp\left\{-\frac{1}{2} \frac{(y_i-\mu_i)^2}{\sigma^2} + \log\left(\frac{1}{\sqrt{2\pi\sigma^2}}\right)\right\}
+        & \text{ pull coefficient inside the exponential}\\
+        &= \exp\left\{-\frac{1}{2} \frac{(y_i-\mu_i)^2}{\sigma^2} -\frac{1}{2}\log\left(2\pi\sigma^2\right)\right\}
+        & \text{ rearrange using log properties}\\
+        &= \exp\left\{-\frac{1}{2} \frac{y_i^2-2y_i\mu_i+\mu_i^2}{\sigma^2} -\frac{1}{2}\log\left(2\pi\sigma^2\right)\right\}
+        & \text{ compute the square}\\
+        &= \exp\left\{\frac{y_i\mu_i+\nicefrac{\mu_i^2}{2}}{\sigma^2} - \frac{1}{2\sigma^2}y_i^2 - \frac{1}{2}\log\left(2\pi\sigma^2\right)\right\}
+        & \text{ group terms containing } \mu_i\\
+      \end{align*}
+      The normal distribution therefore belongs to the EDF by setting:
+      \begin{align*}
+        \theta_i     &= \mu_i, \\
+        \phi         &= \sigma^2, \\
+        b(\theta_i)  &= \nicefrac{\theta_i^2}{2}, \\
+        a_i(\phi)    &= \phi, \\
+        c(y_i; \phi) &= - \frac{1}{2\phi} y_i^2 - \frac{1}{2}\log(2\pi\phi)
+      \end{align*}
 
-Definition of exponential dispersion family (EDF)
-A density belongs to the EDF if it can be written as
-$$
-  f(y_i; \theta_i, \phi) = 
-  \exp\left\{\frac{y_i\theta_i - b(\theta_i)}{a_i(\phi)} + c(y_i; \phi)\right\}
-$$
-Canonical parameters?
-f(y_i) is any density function 
+    \subsection{Example: binomial distribution is a member of the EDF}
+      We want to demonstrate that the binomial distribution is a member of the EDF.
+      \begin{align*}
+      f(y_i; n_i, \pi_i)
+        &= \binom{\pi_i}{y_i}\pi_i^{y_i}(1-\pi_i)^{n_i-y_i}
+        & \text{ definition of binomial distribution}\\
+        &= \exp\,\left\{\log\,\left(\binom{\pi_i}{y_i}\pi_i^{y_i}(1-\pi_i)^{n_i-y_i}\right)\right\}
+        & \text{ exponentiate to compare with EDF} \\
+        &= \exp\,\left\{y_i\log\pi_i+(n_i-y_i)\log(1-\pi_i)+\log\binom{n_i}{y_i}\right\}
+        & \text{ split log and simplify}\\
+        &= \exp\,\left\{\frac{y_i\log\left(\frac{\pi_i}{1-\pi_i}\right)+n_i\log(1-\pi_i)}{1}+\log\binom{n_i}{y_i}\right\}
+        & \text{ group terms containing } \pi_i\\
+      \end{align*}
+      
+      The binomial distribution therefore belongs to the EDF by setting:
+      \begin{align*}
+        \theta_i     &= \log\left(\frac{\pi}{1-\pi}\right) \text{(logit)} \\
+        \phi         &= 1 \\
+        b(\theta_i)  &= - n_i \log(1-\pi_i) \\
+                     &= -n_i \log(1-\frac{e^{\theta_i}}{1 + e^{\theta_i}}) \\
+                     &= n_i \log(1 + e^{\theta_i}) \\
+        a_i(\phi)    &= \phi \\
+        c(y_i; \phi) &= \log\binom{n_i}{y_i}
+      \end{align*}
 
-for some parameters $\theta_i$ and $\phi$ and some functions $a_i$, $b$ and $c$.
+      For the binomial distribution ($Y_i \sim Bin(n_i, \pi_i)$) it is possble to write the relation between old and new parameters explicitely
+      Link from $\theta_i$ to $\mu_i$.
+      $$E[Y_i] = \mu_i = n_i\pi_i = n_i\frac{e^{\theta_i}}{1 + e^{\theta_i}}$$
+      Link from $\mu_i$ to $\theta_i$.
+      $$\pi_i = \frac{\mu_i}{n_i} \implies \theta_i = \log\left(\frac{\pi_i}{1-\pi_i}\right) = \log\left(\frac{\nicefrac{\mu_i}{n_i}}{1-\nicefrac{\mu_i}{n_i}}\right)=\log\left(\frac{\mu_i}{n_i-\mu_i}\right)$$
+      Notice that \textbf{heteroskedasticity} in naturally embedded in the model since the variance depens on $\mu_i$:
+      $$Var(Y_i) = n_i\pi_i(1-\pi_i) = n_i\frac{\mu_i}{n_i}\left(1-\frac{\mu_i}{n_i}\right) = \mu_i\left(\frac{n_i - \mu_i}{n_i}\right)$$
+      This hold true for all GLMs but linear models which is the only homoskedastic model of the group. The fact that heteroskedasticity is mandatory is not a big problem since most datasets are not homoskedastic anyway.
 
-Example: Normal distribution is a member of the EDF
-\begin{align*}
-f(y_i; \mu_i, \sigma^2)
-  &= \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left\{-\frac{1}{2} \frac{(y_i-\mu_i)^2}{\sigma^2}\right\}
-  & \\
-  &= \exp\left\{-\frac{1}{2} \frac{(y_i-\mu_i)^2}{\sigma^2} + \log\left(\frac{1}{\sqrt{2\pi\sigma^2}}\right)\right\}
-  & since final form is exponential so put everything inside exponential and check for match. Using exponential properties\\
-  &= \exp\left\{-\frac{1}{2} \frac{(y_i-\mu_i)^2}{\sigma^2} -\frac{1}{2}\log\left(2\pi\sigma^2\right)\right\}
-  & log property to rearrange\\
-  &= \exp\left\{-\frac{1}{2} \frac{y_i^2-2y_i\mu_i+\mu_i^2}{\sigma^2} -\frac{1}{2}\log\left(2\pi\sigma^2\right)\right\}
-  & Want to collect terms multiplied by y_i\\
-  &= \exp\left\{\frac{y_i\mu_i+\nicefrac{\mu_i^2}{2}}{\sigma^2} - \frac{1}{2\sigma^2}y_i^2 - \frac{1}{2}\log\left(2\pi\sigma^2\right)\right\}
-  & split and simplify\\
-\end{align*}
+  \section{Connection between $\theta_i$ and ($\mu_i$, $Var(Y_i)$)}
+    In general, one can show that, for any function in the EDF,
+    $$\mu_i = E[Y_i] = b^\prime(\theta_i)$$
+    Where $b^\prime$ is the first derivative of the function $b$.
+    \begin{align*}
+    Var(Y_i) &= b^{\prime\prime}(\theta_i) \cdot a_i(\phi) \\
+             &= V(\mu_i) \cdot a_i(\phi) \\
+    \end{align*}
+    Where $b^{\prime\prime}$ is the second derivative of $b$ and $V(\mu_i)$ is the variance function (basically just a way to rewrite underlining the dependence on $\mu$).
 
-The Gaussian distribution belongs to the EDF by setting:
-\begin{align*}
-  \theta_i = \mu_i, \phi = \sigma^2, b(\theta_i) = \nicefrac{\theta_i^2}{2}, a_i(\phi) = \phi, c(y_i; \phi) = - \frac{1}{2\phi} y_i^2 - \frac{1}{2}\log(2\pi\phi)
-\end{align*}
-New parameters
+    \subsection{Example: connection of $\theta_i$, $\mu_i$ and $Var(Y_i)$ for the binomial model}
+      We know, for the binomial function, that
+      $$b(\theta_i) = n_i\log(1+e^{\theta_i})$$
+      The first derivative in $\theta_i$ then becomes
+      $$b^\prime(\theta_i) = \frac{n_ie^{\theta_i}}{1+e^{\theta_i}} = n_i\pi_i$$
+      But it is also known that
+      $$\mu_i = n_i\pi_i$$
+      Therefore, as expected from the general formula
+      $$\mu_i = b^\prime(\theta_i)$$
+      
+      We know that, for the binomial model
+      $$a_i(\phi) = 1$$
+      We then compute the second derivative of $b(\theta_i)$ in $\theta_i$:
+      \begin{align*}
+      b^{\prime\prime}(\theta_i) 
+        &= n_ie^{\theta_i}\left[-\left(\frac{1}{1+e^{\theta_i}}\right)^2e^{\theta_i}\right] + n_i\frac{e^{\theta_i}}{1+e^{\theta_i}}
+        & \text{ by deriving } b^\prime(\theta_i)\\
+        &= -n_i\left(\frac{e^{\theta_i}}{1+e^{\theta_i}}\right)^2 + n_i\frac{e^{\theta_i}}{1+e^{\theta_i}}
+        & \text{ pulling both } e^{\theta_i} \text{ inside the square}\\
+        &= -n_i\pi_i^2+n_i\pi_i
+        & \text{ since } \frac{e^{\theta_i}}{1+e^{\theta_i}} = \pi_i\\
+        &= n_i\pi_i(1-\pi_i)
+        & \text{ collecting } n_i\pi_i\\
+      \end{align*}
+      Therefore, as expected, we get
+      $$Var(Y_i) = b^{\prime\prime}(\theta_i)a_i(\phi) = n_i\pi_i(1-\pi_i)$$
 
-Example 2: Binomial belongs to the EDF
-\begin{align*} % TODO Change it 
-f(y_i; n_i, \pi_i)
-  &= \binom{\pi_i}{y_i}\pi_i^{y_i}(1-\pi_i)^{n_i-y_i}
-  & \\
-  &= \exp\,\left\{\log\,\left(\binom{\pi_i}{y_i}\pi_i^{y_i}(1-\pi_i)^{n_i-y_i}\right)\right\}
-  & same, bring to exp \\
-  &= \exp\,\left\{y_i\log\pi_i+(n_i-y_i)\log(1-\pi_i)+\log\binom{n_i}{y_i}\right\}
-  &  split and simplify0\\
-  &= \exp\,\left\{\frac{y_i\log\left(\frac{\pi_i}{1-\pi_i}\right)+n_i\log(1-\pi_i)}{1}+\log\binom{n_i}{y_i}\right\}
-  & collect terms in y_i\\
-\end{align*}
+  \section{Choice of link function}
+    The choice of link function is not unique and can depend on the function $f$ which was chosen.
 
-Therefore the binomial belongs to the EDF by setting:
-\begin{align*}
-\theta_i = \log\left(\frac{\pi}{1-\pi}\right) logit that you can invert \\
-b(\theta_i) = - n_i \log(1-\pi_i) \\
-= -n_i \log(1-\frac{e^{\theta_i}}{1 + e^{\theta_i}}) \\
-= n_i \log(1 + e^{\theta_i}) \\
-\phi = 1 \\
-a_i(\phi) = \phi \\
-c(y_i; \phi) = \log\binom{n_i}{y_i}
-\end{align*}
+    \subsection{Example: link function for a bernoulli function}
+      Assume that $Y_i$ is bernoulli distributed with probability $\pi_i$ ($Y_i \sim Ber(\pi_i)$). Then:
+      \begin{itemize}
+        \item $\mu_i = \pi_i \in (0,1)$ (since $n_i = 1$)
+        \item $Var(Y_i) = \pi_i(1-\pi_i) = \mu_i(1-\mu_i)$
+        \item $\eta_i = \vec{x}_i^t\vec{\beta}$ with $\eta_i \in (-\infty, +\infty)$
+      \end{itemize}
+      We must find a function $g$ such that $g(\mu_i)=\eta_i$ which, taking into account that $\mu_i \in (0, 1)$ and $\eta_i \in (-\infty, +\infty)$, means:
+      \begin{align*}
+        g&: (0, 1) \to (-\infty, +\infty) \\
+        g^{-1}&: (-\infty, +\infty) \to (0, 1)  \\
+      \end{align*}
+      These conditions are satisfied by any cumulative density functions (CDF), as long as it is continuous (since it must be invertible).
+      We therefore have infinitely many functions $g$ that satify these conditions, but the three most common choices are:
+      \begin{enumerate}
+        \item \textbf{Standard normal CDF}: Choose $g^{-1}=\Phi$, with $\Phi \sim N(1,0)$, hence
+          $$g = \Phi^{-1} : (0,1) \to (-\infty, +\infty)$$
+          This type of regression ($f \sim \text{ bernoulli }, g = \Phi^{-1}$) is called \textbf{probit regression}.
+        \item \textbf{Logistic CDF}: Consider the logistic distribution, which has density
+          $$f(y; \mu, \sigma^2) = \frac{\exp(\nicefrac{(y-\mu)}{\sigma})}{\sigma^2(1 + \exp\left(\nicefrac{(y-\mu)}{\sigma}\right)^2}\;,\; \text{ with } -\infty < y < +\infty$$
+          Setting $\mu = 0$, $\sigma^2 = 1$ we get the sigmoid function
+          $$g^{-1} = F(y; 0, 1) = \frac{e^y}{1 + e^y}$$
+          The link function then becomes the logit link
+          $$\frac{e^\eta}{1 + e^\eta} = \mu \implies \eta = \log\left(\frac{\mu}{1-\mu}\right)$$
+          This regression ($f \sim \text{ bernoulli }, g = \text{ logit }$) is the \textbf{logistic regression}. 
+        \item \textbf{Poisson CDF}: This link function is rarely used since it performs well in niche cases, such as with a binomial distributions with $\pi \sim \text{ Bernoulli }$ (e.g. the number of bacteria on a plate in a dilution bioassay, in which you do not measure the number of bacteria, just whether there are or not). Assume that $Z_i$ is a possion distributed random variable with parameter $\lambda_i$ ($Z_i \sim \text{ Poisson }(\lambda_i)$). Then assume that we measure
+        $$
+        y_i = 
+        \begin{cases}
+          0 & \text{ if } z_i = 0 \text{ (absent)} \\
+          1 & \text{ if }  z_i > 0 \text{ (present)}
+        \end{cases}
+        $$
+        We would like to describe how $y_i$ changes with time ($x = 0, 1, 2, \dots$), therefore we need a function that links $\mu_i$ and $\eta_i$.
+        Since we know that 
+        $$\eta_i = \log(\lambda_i)$$
+        and that
+        \begin{align*}
+        \mu_i 
+          &= E[Y_i] \\
+          &= 0 \cdot P(Y_i = 0) + 1 \cdot P(Y_i = 1) \\
+          &= P(z_i > 0) \\ 
+          &= 1 - P(z_i = 0) \\
+          &= 1 - e^{-\lambda_i}
+        \end{align*}
+        we can link $\mu_i$ and $\eta_i$ passing through $\lambda_i$ ($\mu_i \leftrightarrow \lambda_i \leftrightarrow \eta_i$). Firstly we rearrange the link between $\mu_i$ and $\lambda_i$:
+        $$\mu_i = 1 - e^{-\lambda_i} \implies e^{-\lambda_i} = 1 - \mu_i \implies \lambda_i = -\log(1 - \mu_i)$$
+        Then, plugging in the link between $\lambda_i$ and $\eta_i$ ($\log(\lambda_i) = \eta_i$) we get
+        $$\eta_i = \log(-\log(1-\mu_i))$$
+        This link is called \textbf{complementary log-log link}
+      \end{enumerate}
 
-Considering Binomial case, you can write relation between old and new param explicitely
-$$Y_i \sim Bin(n_i, \pi_i)$$
-$$E[Y_i] = \mu_i = n_i\pi_i = n_i\frac{e^{\theta_i}}{1 + e^{\theta_i}}$$
-A link from $\theta_i$ to $\mu_i$.
-
-Viceversa:
-$$\pi_i = \frac{\mu_i}{n_i} \implies \theta_i = \log\left(\frac{\pi_i}{1-\pi_i}\right) = \log\left(\frac{\nicefrac{\mu_i}{n_i}}{1-\nicefrac{\mu_i}{n_i}}\right)=\log\left(\frac{\mu_i}{n_i-\mu_i}\right)$$
-Heteroskedasticity in naturally embedded in the model (apart from LM) (since var depends on Mu). But most datasets do not have homosk, so whatever.
-
-Connection between $\theta_i$ and $\mu_i$ and $Var(Y_i)$
-Can formalize more. In general, one can show that
-$$\mu_i = E[Y_i] = b^\prime(\theta_i)$$
-Where $b^\prime$ is the first derivative of the function $b$.
-\begin{align*}
-Var(Y_i) &= b^{\prime\prime}(\theta_i) \cdot a_i(\phi) \\
-         &= V(\mu_i) \cdot a_i(\phi) \\
-\end{align*}
-Where $b^{\prime\prime}$ is the second derivative of $b$ and $V(\mu_i)$ is the variance function (basically just a way to rewrite underlining the dependence on mu).
-
-Example Binomial
-$$\mu_i = b^\prime(\theta_i)$$
-Function in the binomial case
-$$b(\theta_i) = n_i\log(1+e^{\theta_i})$$
-Derivative is equal to mu
-$$b^\prime(\theta_i) = \frac{n_ie^{\theta_i}}{1+e^{\theta_i}} = n_i\pi_i$$
-$$Var(Y_i) = b^{\prime\prime}(\theta_i)a_i(\phi)$$
-$$a_i(\phi) = 1$$
-\begin{align*}
-b^{\prime\prime}(\theta_i) 
-  &= n_ie^{\theta_i}\left[-\left(\frac{1}{1+e^{\theta_i}}\right)^2e^{\theta_i}\right] + n_i\frac{e^{\theta_i}}{1+e^{\theta_i}}
-  & \\
-  &= -n_i\left(\frac{e^{\theta_i}}{1+e^{\theta_i}}\right)^2 + n_i\frac{e^{\theta_i}}{1+e^{\theta_i}}
-  & \\
-  &= -n_i\pi_i^2+n_i\pi_i
-  & \\
-  &= n_i\pi_i(1-\pi_i)
-  & \\
-\end{align*}
-Function for any function of the family 
-
-Choice of link function
-Assume for instance to look at the bernoulli case 
-$Y_i \sim Ber(\pi_i)$
-$$\mu_i = \pi_i \in (0,1)$$ Cause n_i = 1
-$Var(Y_i) = \pi_i(1-\pi_i) = \mu_i(1-\mu_i)$
-$\eta_i = \vec{x}_i^t\vec{\beta}$
-
-$g(\mu_i) = \eta_i$ Want to find this function g that must take 
-$\mu_i \in (0,1)$ and map it to
-$$\eta_i \in (-\infty, +\infty)$$
-$$g: (0,1) \to (-\infty, + \infty)$$
-$$g^{-1}: (-\infty, + \infty) \to (0,1)$$
-These conditions are satisfied by cumulative density functions (CDF), as long as continuous (for invertibility)
-
-3 main choices 
-1. Choose $$g^{-1}=\Phi$$ with $\phi$ the standard normal CDF (so mu 1 var 0).
-This gives the link function 
-$g = \Phi^{-1}: (0,1) \to (-\infty, + \infty)$
-if f bernoulli and g this way get probit regression
-$f: Bernoulli, g=\phi^{-1} \implies \text{ probit regression}$
-
-2. Consider the logistic distribution (never seen before): 
-This has density 
-$$f(y; \mu, \sigma^2) = \frac{\exp(\nicefrac{(y-\mu)}{\sigma})}{\sigma^2(1 + \exp\left(\nicefrac{(y-\mu)}{\sigma}\right)^2}$$
-$-\infty < y < +\infty$
-Setting $\mu = 0, \sigma^2 = 1$, 
-$$g^{-1} = F(y; 0, 1) = \frac{e^y}{1 + e^y}$$
-Sigmoid function 
-
-This gives the link function
-$$\frac{e^\eta}{1 + e^\eta} = \mu \implies \eta = \log\left(\frac{
-\mu}{1-\mu}\right)$$
-Logit link 
-$f: Bernoulli, g logit \implies logistic regression$
-
-Canonical Link (default in glm)
-The logit link is called canonical link since
-$$\eta_i = \log\left(\frac{\mu_i}{1-\mu_i}\right) = \theta_i$$
-
-In general a canonical link is a function g such that 
-$$\eta_i = g(\mu_i) = \theta_i$$
-Some advantages:
-\begin{itemize}
-  \item Clear interpretation of parameters ($\vec{\beta}$)
-  \item Theoretical reasons (Fisher scoring and iteratively reweighted least squares algorithms are equivalent, zero sum residuals)
-  \item It follows directly from the EDF formulation of the distribution (just derive), in fact $$\mu_i = b^\prime(\theta_i), \theta_i = (b^\prime)^{-1}(\mu_i)$$
-\end{itemize}
-
-3. (least used one) If this setting probably could be used
-$$Z_i \sim Poisson(\lambda_i)$$ eg the number of bacteria on a plate (dilution bioassay), but you do not measure the number of bacteria, just if they are or not.
-You see a binomial but underlying poiss.
-$$
-y_i = 
-\begin{cases}
-  0 & if z_i = 0 (absent) \\
-  1 & if z_i > 0 (present)
-\end{cases}
-$$
-We would like to describe how y_i changes with time x = 0, 1, 2,... 
-This link function should link mu i and eta i 
-$$\mu_i \lambda_i \eta_i$$
-We choose to link lambda and eta:
-$$\eta_i = \log(\lambda_i)$$
-\begin{align*}
-  \mu_i 
-  &= E[Y_i] \\
-  &= 0 \cdot P(Y_i = 0) + 1 \cdot P(Y_i = 1) \\
-  &= P(z_i > 0) \\ 
-  &= 1 - P(z_i = 0) \\
-  &= 1 - e^{-\lambda_i}
-\end{align*}
-
-Given the 2 links and putting them together 
-$$\mu_i = 1 - e^{-\lambda_i} \implies e^{-\lambda_i} = 1 - \mu_i \implies \lambda_i = -\log(1 - \mu_i)$$
-$$\log(\lambda_i) = \eta_i$$
-$$\eta_i = \log(-\log(1-\mu_i))$$
-Called complementary log-log link
-
-More common these three but also others.
+    \subsection{Canonical link}
+      The logit link is also called \textbf{canonical link} since 
+      $$\eta_i = \log\left(\frac{\mu_i}{1-\mu_i}\right) = \theta_i$$
+      In general a canonical link is a function g such that 
+      $$\eta_i = g(\mu_i) = \theta_i$$
+      These link functions have some advantages:
+      \begin{itemize}
+        \item Clear interpretation of the parameters ($\vec{\beta}$)
+        \item Some theoretical reasons (Fisher scoring and iteratively reweighted least squares algorithms are equivalent, zero sum residuals)
+        \item It follows directly from the EDF formulation of the distribution (just derive), in fact $\mu_i = b^\prime(\theta_i), \theta_i = (b^\prime)^{-1}(\mu_i)$
+      \end{itemize}
+      Despite these advantages the logit link is not always the correct one to use.
