@@ -4,7 +4,7 @@ If you want to contribute to the project fork the repository and create a push r
 To get the notes simply download the .pdf file.
 
 # Lectures
-* Already added: 28-02, 02-03, 07-03, 09-03
+* Already added: 28-02, 02-03, 07-03, 14-03
 * To be added: 16-03
 
 # Labs and tutoring
