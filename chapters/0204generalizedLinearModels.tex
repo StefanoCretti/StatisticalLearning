@@ -206,3 +206,46 @@
         \item It follows directly from the EDF formulation of the distribution (just derive), in fact $\mu_i = b^\prime(\theta_i), \theta_i = (b^\prime)^{-1}(\mu_i)$
       \end{itemize}
       Despite these advantages the logit link is not always the correct one to use.
+  
+  \section{Residuals in generalized linear models}
+    As already seen, a linear model can be express either as:
+    $$y_i = \eta_i + \varepsilon_i \text{ (signal + noise representation)}$$ 
+    Or as: 
+    $$Y \sim N(\eta_i, \sigma^2)$$
+
+    From the first expression we get the usual definition or residuals (estimates of the errors) in linear models:
+    $$e_i = y_i - \hat{\eta}_i$$
+
+    Since for generalized linear models we can only use the formulation $Y \sim N(\eta_i, \sigma^2)$ (meaning that we cannot simply write the model as value plus noise), we need a new way to define the residuals. There are many options, but the most commonly used ones are \textbf{Pearson residuals} and \textbf{deviance residuals}.
+
+    \subsection{Pearson residuals}
+      Pearson residuals are defined as follows:
+      $$r_i^p = \frac{y_i - \hat{\mu}_i}{\sqrt{\nicefrac{\hat{Var(y_i)}}{\hat{\phi}}}}$$
+
+      If we apply this definition, for instance, to a poisson distribution ($\phi = 1$), we get 
+      $$r_i^p = \frac{y_i - \hat{\mu}_i}{\sqrt{\hat{\mu_i}}} \text{ with } y_i \in (0, +\infty)$$ 
+      Beacause of the interval on which the values of $y_i$ are defined, the residuals may not be symmetric, but the assumption of gaussianity is usually satisfied with $\mu$ big.
+
+    \subsection{Deviance residuals}
+      The \textbf{deviance} of an observation $i$ is defined as:
+        $$d_i = 2[l_i(y_i; y_i) - l_i(\hat{\mu}_i; y_i)]$$
+      Where:
+      \begin{itemize}
+        \item $\hat{\mu}_i = e^{\vec{x}_i^t\hat{\vec{\beta}}}$
+        \item $l_i(y_i; y_i)$ is the log-likeihood of the saturated model (most fitting non parametric model, therefore the highest possible likelihood)
+        \item $l_i(\hat{\mu}_i; y_i)$ is the log-likelihood of the model using the estimated parameters
+        \item $d_i \geq 0$ 
+      \end{itemize}
+      The overall deviance of the model is defined as the sum of the deviance of each observation
+      $$\text{deviance } \coloneqq \sum_{i = 1}^n d_i$$
+      The lower the deviance, the closer the model to a perfect fit.
+      
+      The \textbf{deviance residuals} can be then defined as:
+      $$r_i^D = \sqrt{d_i} \cdot \text{sign}(y_i - \hat{\mu_i})\;\;
+      \text{ where sign}(y_i - \hat{\mu_i}) = 
+      \begin{cases}
+        1  & y_i>\hat{\mu_i} \\
+        -1 & y_i<\hat{\mu_i} \\
+        0  & y_i=\hat{\mu_i}
+      \end{cases}
+      $$
