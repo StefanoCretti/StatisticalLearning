@@ -1,0 +1,89 @@
+\chapter{Simulating data from a GLM in R}
+Simulating data is often used to test the performance of your model.
+
+\section{Example: simulating Poisson data}
+In general, in a Possion regression you have:
+$$Y_i = (Y|\vec{X} = \vec{x}_i) \sim \text{Poisson}(\mu_i)$$
+$$\mu = E[Y_i] \in (0, +\infty)$$
+$$\eta_i = \vec{x}_i^t\vec{\beta} \in (-\infty, \infty)$$
+
+If you then decide to use the canonical link:
+$$\eta_i = \log(\mu_i) \implies \mu_i = e^{\eta_i}$$
+
+Therefore you can generalize this Poisson regression as
+$$Y_i \sim \text{Poisson}(e^{\vec{x}_i^t\vec{\beta}})$$
+
+To then simulate data to test this model you must:
+\begin{itemize}
+  \item Assume a number of predictors $p$(in our case $p=1$ for plotting convenience)
+  \item Fix some values for $\beta$ (in our case notice that $\eta_i = \beta_0 + \beta_ix_i$)
+  \item Generate $n$ random values of $x_i$ (in this case $n=100$) and compute the corresponding $y_i$ values.
+\end{itemize}
+
+In R this translates to:
+\begin{minted}{R}
+# Simulate the data
+set.seed(123)  # In order to get repeatable results
+x <- rnorm(100, 0, 2)  # Does not matter, just to get random values 
+beta0 <- 1  # Fixed
+beta1 <- 2  # Fixed
+eta <- beta0 + beta1 * x  # Vector of values
+mu <- exp(eta)  # Because we chose the canonical link
+y <- rpois(100, lambda=mu)  # Y values corresponding to random X values
+
+# Ignoring the model, try to predict relation
+plot(x, y)  # See that is not linear
+plot(x, log(y))  # Since we obtain a line, we expect eta = beta0 + beta1x
+
+# Try fitting linear model (not the best approach)
+z <- log(y)  # Not good since you have many zeros and infinites
+summary(z)  
+z <- log(y+1)  # Sudo-count (commonly used)
+summary(z)
+modA <- lm(formula=z~x)  # Fit model
+summary(modA)  # Estimated parameters are far from chosen ones
+plot(modA)  # Notice systematic trends in residual analysis 
+modB <- lm(z~x+I(x^2))  # Try adding quadratic term to match residual analysis
+# Note: I(math_exp) is used to interpret the content as a mathematic expression
+summary(modB)  # Not that far from starting data
+plot(modB)  # Not the best but seems decent
+
+# Proper way to try and fit data
+y[1:100]  # Inspect the data and notice that the response in positive discrete
+# You could then try fitting different distributions based on that, ...
+# ... Poisson seems reasonable
+modC <- glm(formula=y~x,family="poisson")  # Canonical link by default
+summary(modC)  # Estimates are rather close
+# Note: Because of how glm works, you need decently big values for n
+# Note: Fisher Scoring gives info on optimization attempts number
+plot(modC)  # Seems decent
+# Note: Some regular-ish patterns may be seen when working with discrete data
+
+# Use model to make predictions
+p1<-predict(modC)  # ! Estimates linear predictors, not values of y
+summary(p1)  
+p2<-predict(modC,type="response")  # Estimates values of y
+summary(p2)
+plot(p2,y)  # Plot predicted vs simulated values of y
+abline(0,1)  # Line that should be approximated by the datapoints 
+\end{minted}
+
+\section{Example: simulating exponential data}
+You can do the same with other distributions. This is the example for an exponential distribution.
+\begin{minted}{R}
+x <- rnorm(100, 0, 2)  # Does not matter, just to get random values 
+beta0 <- 1  # Fixed
+beta1 <- 2  # Fixed
+eta <- beta0 + beta1 * x  # Vector of values
+mu <- exp(eta) / (1 + exp(eta))  # Use logit as link
+y <- rbinom(100, size=1, prob=mu)  # Compute corresponding y values
+plot(x, y)
+
+modD <- glm(y~x, family="binomial")  # Create the model
+# modD <- glm(y~x, family=binomial(link="logit"))  # Equivalent formulation
+
+p4<-predict(modD) # Compute linear predictors
+summary(p4)
+p5<-predict(modD,type="response") # Compute fitted probabilities
+summary(p5)
+\end{minted}
