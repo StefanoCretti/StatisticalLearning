@@ -1,3 +1,5 @@
+\graphicspath{{chapters/images/0201/}}
+
 \chapter{What is statistical learning?}
   
   \section{Definition of statistical learning}
@@ -32,7 +34,7 @@
       With $\hat{f}$ being our estimate of $f$.
       
       If this is the only reason to estimate $f$, then $\hat{f}$ can be a black-box method (deep learning).
-      The accuracy of $\hat{Y}$ as a predictor of $Y$ can be described calculating the expected MSE (mean squared error):
+      The accuracy of $\hat{Y}$ as a predictor of $Y$ can be described calculating the expected \textbf{MSE}, the test Mean Squared Error %TODO ref image:
 
       \begin{align*}
         E[(Y&-\hat{f}(\vec{X}))^2 \,|\, \vec{X} = \vec{x}\,] = 
@@ -108,7 +110,7 @@
       Non-parametric methods do not make any explicit assumption on the function form of $f(\vec{X})$. These methods want to estimate $f$ by getting as close as possible to the data, without being too \textit{rough or wiggly} (basically \textbf{overfitting}).
 
     \subsection{Parametric vs non-parametric methods}
-      Despite parametric methods being more restrictive than non-parametric ones, we might still choose to adopt the former for the sake of interpretability and generalizability outside of the training data.
+      Despite parametric methods being more restrictive than non-parametric ones, we might still choose to adopt the former for the sake of interpretability and generalizability outside of the training data. %TODO sezione ampliabile
 
   \section{Bias-variance trade-off}
 
@@ -175,18 +177,27 @@
     \end{align*} 
     Where:
     \begin{itemize}
-      \item $f(\vec{X}) - E[\hat{f}(\vec{X})])^2$ is the bias
+      \item $f(\vec{X}) - E[\hat{f}(\vec{X})])^2$ is the \textbf{bias}
       \item $Var(\varepsilon)$ is the irreducible error
-      \item $Var(\hat{f}(\vec{X}))$ is the variance of the model
+      \item $Var(\hat{f}(\vec{X}))$ is the \textbf{variance} of the model
     \end{itemize}
     \textbf{Bias} refers to the error that is introduced by approximating a problem, which may be extremely complicated, by a much
-    simpler model. If an estimated model performs well on the training data but it does not perform well on new data, the estimated model has high bias. If an estimated model performs well on multiple data sets, the estimated model has low bias. High bias means that an estimated model is far from the real model. \\
+    simpler model. If an estimated model performs well on the training data but it does not perform well on new data, the estimated model has high bias. If an estimated model performs well on multiple data sets, the estimated model has low bias. \textit{High bias means that an estimated model is far from the real model}. \\\\
     \textbf{Variance} refers instead to the amount by which $\hat{f}$ would change if we
     estimated it using a different training data set. Ideally, the $\hat{f}$ calculated 
-    through different datasets should be not significantly different. The more flexible models are generally more influenced by a change of dataset. \\
+    through different datasets should be not significantly different, the model should be fitted equivalently using a different training dataset. The more flexible models, the more they are influenced by a changes of the training dataset. \\
     In order to minimize the expected error, we need to achieve low bias and low variance. In practice, one needs to find a good trade-off between bias and variance, since reducing one often involves increasing the other. In general:
     \begin{itemize}
       \item A \textbf{simpe model} has high bias (it is far from the real model) and low variance (when fitting using different training data you get similar estimated parameters).
-      \item A \textbf{complex model} has low bias and high variance.
+      \item A \textbf{complex model} has low bias and high variance, as the complexity of the model has the aim of making it as near as possible to the real $ f $.
     \end{itemize}
-    Both in parametric and non-parametric methods, you generally have at least one \textbf{tuning parameter}, which is a parameter that can be tweaked (for instance the degree of the polinomial) in order to choose the balance between bias and variance.
+    Both in parametric and non-parametric methods, you generally have at least one \textbf{tuning parameter}, which is a parameter that can be tweaked (for instance the degree of the polinomial) in order to choose the balance between bias and variance, as it can be seen in figure \ref{MSEVarianceBias}.
+   
+\begin{figure}[h]
+\label{MSEVarianceBias}
+\caption{  
+(Image of Sohil et al., 2022. As the flexibility of a model increases, the Bias decreases, and the varaiance of the model increases}
+\centering
+\includegraphics[width=0.4\textwidth]{MSEdependsonVarianceandBias}
+\end{figure}
+
