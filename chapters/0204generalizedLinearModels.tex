@@ -1,5 +1,5 @@
 \chapter{Generalized linear models}
-  \textbf{Generalized linear models} (GLMs) are a broad family of regression models which includes, for instance, linear, logistic and poisson regressions (and many more). The concept was created by Nelder and Wedderburn in 1972, in order to map into a single framework all regressions models.
+  \textbf{Generalized linear models (GLMs)} are a broad family of regression models which includes, for instance, linear, logistic and poisson regressions (and many more). The concept was created by Nelder and Wedderburn in 1972, in order to map into a single framework all regressions models.
   In general regression models are characterized by:
   \begin{itemize}
     \item $Y$: the random \textbf{response variable} you want to predict
@@ -29,8 +29,8 @@
     $\eta_i = \vec{x}_i^t\vec{\beta} = \beta_0x_{i0} + \beta_1x_{i1} + \dots + \beta_px_{ip}$ & 
     $\eta_i = \vec{x}_i^t\vec{\beta}$  \\
     \end{tabularx}
-
-    First of all, linear models assume that the random variable $Y_i$ is normal distributed, with mean $\mu_i$, meaning that $E[Y|\vec{X}=\vec{x}_i]$, and $\sigma^2 = Var(Y_i) = Var(Y|\vec{X}=\vec{x}_i)$. Notice that the variance is constant, therefore homoskedasticity is assumed. On the other hand, generalized linear models do not make any assumptions on the shape of the distribution of $Y_i$; $Y_i$ is distributed according to some function $f(y_i)$ with the parameters $\mu_i$ and $\phi$. $\phi$ is called \textbf{special parameter} and it may or may not be present in the model.
+\\
+    First of all, linear models assume that the random variable $Y_i$ is normal distributed, with mean $\mu_i$, meaning that $E[Y|\vec{X}=\vec{x}_i] = \mu_i$, and $\sigma^2 = Var(Y_i) = Var(Y|\vec{X}=\vec{x}_i)$. Notice that the variance is constant, therefore  \emph{homoskedasticity} is assumed. On the other hand, generalized linear models do not make any assumptions on the shape of the distribution of $Y_i$; $Y_i$ is distributed according to some function $f(y_i)$ with the parameters $\mu_i$ and $\phi$. $\phi$ is called \textbf{special parameter} and it may or may not be present in the model.
     The \textbf{linear predictor} is the function used to predict the outcome of the random variable $Y_i$ knowing some values for the predictor $\vec{X}_i$; in both cases the linear predictor is defined as $\eta_i = \vec{x}_i^t\vec{\beta} = \beta_0x_{i0} + \beta_1x_{i1} + \dots + \beta_px_{ip}$, where $p$ is the number of parameters and the coefficients $\beta_0, \dots, \beta_p$ are the weights for the predictors (therefore the linear predictor is a linear combination in $\vec{\beta}$ of the predictors). The difference is in the relation between $\mu_i$ and $\eta_i$. In linear models $\mu_i$ coincides with $\eta_i$, because assuming a normal distribution $\mu_i = E[Y_i] = E[Y|\vec{X} = \vec{x}_i] = \eta_i$; in generalized linear models $\mu_i$ and $\eta_i$ are related by a \textbf{link function}, which is a function $g$ of $\mu_i$ such that $g(\mu_i) = \eta_i$.
     A generalized linear model is then a choice of a distribution function $f$ and a link function $g$; for instance, if $f$ is a normal distribution (with $\sigma^2 = \phi$) and $g$ is the identity function (therefore $\mu_i = \eta_i$), we get the linear model. 
   

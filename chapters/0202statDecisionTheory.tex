@@ -211,7 +211,7 @@ On the other hand, if the classifier predicts $\vec{x}$ to belong to to class 1 
 \begin{figure}[h]
 \caption{The figure on the left represents the best possible scenario, as the BES value is 0, and the decision surface separate completely the elements belonging to the two classes. The graph on the left instead shows an intermadiate situation, where $ BER \neq 0 $}
 \centering
-\includegraphics[width=0.6\textwidth]{BERBayesErrorRate}
+\includegraphics[width=0.8\textwidth]{BERBayesErrorRate}
 \label{BER}
 \end{figure}
 
@@ -289,14 +289,13 @@ On the other hand, if the classifier predicts $\vec{x}$ to belong to to class 1 
     Meanwhile, for a classification, you create a \textbf{confusion matrix} (figure \ref{ConfMat}), estimate the probabilities via some method, substitute the values into the following formulas to obtain \textbf{sensitivity and specificity}.
      
     \begin{align*}
-      \text{True positive rate (TPR)} &= \frac{\text{TP}}{\text{TP } + \text{ FN}} &
-        &= \text{ \textbf{sensitivity}} \\\\
-        
-      \text{False positive rate (FPR)} &= \frac{\text{FP}}{\text{FN } + \text{ FP}} 
-        &= 1 - \frac{\text{TN}}{\text{TN } + \text{ FP}} &= 1 - \text{ \textbf{specificity}} \\\\
-        
-      \text{Error rate} &= \frac{\text{FP } + \text{ FN}}{m}
+      \text{\textbf{True positive rate (TPR)}} &= \frac{\text{TP}}{\text{TP } + \text{ FN}} &
+        &= \text{ \textbf{sensitivity}} 
+      \text{\textbf{False positive rate (FPR)}} &= \frac{\text{FP}}{\text{FN } + \text{ FP}} 
+        &= 1 - \frac{\text{TN}}{\text{TN } + \text{ FP}} &= 1 - \text{ \textbf{specificity}} 
+      \text{\textbf{Error rate}} &= \frac{\text{FP } + \text{ FN}}{m}
     \end{align*}
+
     Notice that this last formula only works when using a 1-0 loss function; if you are using a misclassification loss function, the formula is similar but weighted:
     $$\text{Misclassification cost}= \frac{c_0 \text{ FP} + c_1 \text{ FN}}{m}$$
 
@@ -306,7 +305,7 @@ On the other hand, if the classifier predicts $\vec{x}$ to belong to to class 1 
 \begin{figure}[h]
 \caption{Image taken from Wikipedia. ROC curve. }
 \centering
-\includegraphics[width=0.6\textwidth]{RocCurve}
+\includegraphics[width=0.4\textwidth]{RocCurve}
 \label{ROCcurve}
 \end{figure}
 
