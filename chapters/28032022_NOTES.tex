@@ -1,0 +1,102 @@
+\graphicspath{{chapters/images/0/}}
+
+\section{Naive Bayes}
+recalling last lecture, 
+
+the main assumption is:
+
+$$f_j(x) = \prod_{k = 1}^p$$
+
+conditional indipendence,
+consider the case when x1 and xp are discrete. probability di tutte avere un singolo valore.
+
+$$ $$
+
+Those distrivvutions are denoted as $ ... $. Joint probability of indipendent events, conditional on the class. conditional indipendence depending on the class ($ Y = j $), for every possible j class. 
+
+If x1, ... xp are continous. This is a special type of Bayesian network. Class pointing to the predictors, no edges between the predictors.  
+
+\subsection{Gaussian case}
+if fj is a multivariate Gaussian, fjk are gausians. 
+
+x perpendicular to y means Cov(x, y) = 0. In the gaussian case it is true. 
+
+conditional indipendence assumption results in. covariances are 0 and the only values that could be different from it are on the diagonal.
+
+difference s with LDA: variances depend on j, off diagonal values. QDA: off diagonal is 0.
+
+\subsubsection{Decision Surface}
+fjk are gaussian
+
+P(Y = j | x_1, \dots, x_p) \alpha \pi_j \prod_{k = 1}^p f_{jk}(x_k)
+
+quadratic decision urface works well particularly fr large p.
+
+The most common version of Naive Bayes is the Multinomial one (Multinomial naive bayes)
+
+x_1 ... x_p categorical. fjk is the distribution of x_k given y = j, where $x_k$ is a class. THe most natural assumtion is that of a Multinomial distribution.
+
+$$ P(Y = j | \vec{X} = )$$
+
+if with two classes, we will have two probabilities, as $$P(Y = 0) P(Y = 1) $$
+
+
+In general, they are used $(G_i -1) * 2$ parameters fo eacg predictor $X_i$
+
+
+Global and local assumption of independence in the parameters across different predictors (global) and across different leversls of the response variable for a given predictor (local).
+For this reason we concentrate on inferene of a single multinomial random varible (think of $X_i$ conditional for $ y = $)
+
+\subsection{Bayesian inference} 
+classical and freuentistic statistical inference.
+
+You have some data of size n, random sampled.
+
+In classical statistics, it would be needed a likelihood function
+
+$$ L(\theta) = \prod_{i = 1}^n f(x_i; \theta)\\$$
+
+$$\hat{\theta} = argmax_\theta L(\theta)$$
+
+In Bayesian statistics: $\theta$ is a random variable, not a fixed unknown value, with a prior distribution, and after seeing the data, we obtain the posterior distribution.
+
+$$ g(\theta | data) = \frac{f(data | \theta) h(\theta)}{P(data)} $$
+
+which can be written as 
+
+$$f(x_1 | \theta) \dots f(x_n | \theta) h(\theta) $$
+
+where the first part is the likelihood, the second term is the prior. the posterior would be a distribution of theta. It is possible to obtain the mean.
+
+$$ \hat{\theta} = E[g(\theta | data)] $$
+whih is the Bayesian estimation
+
+\textbf{Example}: beta binomial (binary predictor)\\
+
+we assume Bernoulli for a particular
+
+$$ X \tilde Bernoulli(\theta)} $$
+$$ f(x, \theta) = \theta^x (1 - \theta)^{ $$
+
+where $ \theta \in (0, 1) $
+
+some data from a binomial
+
+the prior distribution is assumed to be the Beta distribution
+
+$$ \theta \tilde Beta(\alpha, \beta)$$
+
+$$ h(\theta) = \frac{\Gamma(\alpha + \beta)}{\Gamma (\alpha) \Gamma (\beta)} \theta^{\alpha -1} (1 - \theta)^{\beta -1} $$
+
+different $\alpha$ and $\beta$ to match our prior knowledge
+
+The likelihood:
+$$ L(\theta) \prod_{i = 1}^n \theta^{x_i} (1- \theta)^{1- x_i} ) $$
+
+The coefficients get updated with the data, to give new $\beta$ distribution which is the posterior distribution.
+
+$$BETA(\sum_{i = 1)^n x_i + \alpha , n - \sum_{i = 1}^n x_i + \beta$$
+
+\textbf{Example 2}: Dirichlet-multinomial
+
+$X$ categorical with $G$ categories. 
