@@ -41,9 +41,11 @@
     With:
     \begin{itemize}
       \item $f(y_i)$ is a generic density function 
-      \item $\theta_i$ and $\phi$ are some parameters. The values of $\theta_i$ are called canonical parameters.
+      \item $\theta_i$ and $\phi$ are some parameters. The values of $\theta_i$ are called \textit{canonical parameters}.
       \item $a_i$, $b$ and $c$ are some functions.
     \end{itemize}
+    
+	It is obvious that, if a density function could be related to this family, it is possible to  derive from its fundamental parameters the functions $a_i$, $b$ and $c$, and $\theta_i$. Now we'll try to understand if some major density functions belong to the EDF family.
 
     \subsection{Example: normal distribution is a member of the EDF}
       We want to demonstrate that the normal distribution is a member of the EDF.
@@ -85,21 +87,28 @@
       
       The binomial distribution therefore belongs to the EDF by setting:
       \begin{align*}
-        \theta_i     &= \log\left(\frac{\pi}{1-\pi}\right) \text{(logit)} \\
+        \theta_i     &= \log\left(\frac{\pi}{1-\pi}\right) \text{(\textbf{logit})} \\
         \phi         &= 1 \\
-        b(\theta_i)  &= - n_i \log(1-\pi_i) \\
+        b(\theta_i)  &= - n_i \log(1-\pi_i)\\
                      &= -n_i \log(1-\frac{e^{\theta_i}}{1 + e^{\theta_i}}) \\
                      &= n_i \log(1 + e^{\theta_i}) \\
         a_i(\phi)    &= \phi \\
         c(y_i; \phi) &= \log\binom{n_i}{y_i}
       \end{align*}
 
+We replaced  $\pi_i = \frac{e^{\theta_i}}{1 + e^{\theta_i}}}$ as:
+
+	\begin{align*}
+	e^{\theta_i} = \frac{\pi_i}{1-\pi_i} & \Rightarrow (1-\pi_i)e^{\theta_i} = \pi_i \\
+	& \Rightarrow e^{\theta_i} - \pi_i e^{\theta_i} = \pi_i \Rightarrow \pi_i = \frac{e^{\theta_i}}{1+ e^{\theta_i}}
+	\end{align*}
+
       For the binomial distribution ($Y_i \sim Bin(n_i, \pi_i)$) it is possble to write the relation between old and new parameters explicitely
       Link from $\theta_i$ to $\mu_i$.
       $$E[Y_i] = \mu_i = n_i\pi_i = n_i\frac{e^{\theta_i}}{1 + e^{\theta_i}}$$
       Link from $\mu_i$ to $\theta_i$.
       $$\pi_i = \frac{\mu_i}{n_i} \implies \theta_i = \log\left(\frac{\pi_i}{1-\pi_i}\right) = \log\left(\frac{\nicefrac{\mu_i}{n_i}}{1-\nicefrac{\mu_i}{n_i}}\right)=\log\left(\frac{\mu_i}{n_i-\mu_i}\right)$$
-      Notice that \textbf{heteroskedasticity} in naturally embedded in the model since the variance depens on $\mu_i$:
+      Notice that \textbf{heteroskedasticity} in naturally embedded in the model since the variance depends on $\mu_i$:
       $$Var(Y_i) = n_i\pi_i(1-\pi_i) = n_i\frac{\mu_i}{n_i}\left(1-\frac{\mu_i}{n_i}\right) = \mu_i\left(\frac{n_i - \mu_i}{n_i}\right)$$
       This hold true for all GLMs but linear models which is the only homoskedastic model of the group. The fact that heteroskedasticity is mandatory is not a big problem since most datasets are not homoskedastic anyway.
 
@@ -111,7 +120,7 @@
     Var(Y_i) &= b^{\prime\prime}(\theta_i) \cdot a_i(\phi) \\
              &= V(\mu_i) \cdot a_i(\phi) \\
     \end{align*}
-    Where $b^{\prime\prime}$ is the second derivative of $b$ and $V(\mu_i)$ is the variance function (basically just a way to rewrite underlining the dependence on $\mu$).
+    Where $b^{\prime\prime}$ is the second derivative of $b$ and $V(\mu_i)$ is the \textit{variance function} (basically just a way to rewrite underlining the dependence on $\mu$).
 
     \subsection{Example: connection of $\theta_i$, $\mu_i$ and $Var(Y_i)$ for the binomial model}
       We know, for the binomial function, that
@@ -143,8 +152,8 @@
   \section{Choice of link function}
     The choice of link function is not unique and can depend on the function $f$ which was chosen.
 
-    \subsection{Example: link function for a bernoulli function}
-      Assume that $Y_i$ is bernoulli distributed with probability $\pi_i$ ($Y_i \sim Ber(\pi_i)$). Then:
+    \subsection{Example: link function for a Bernoulli function}
+      Assume that $Y_i$ is Bernoulli distributed with probability $\pi_i$ ($Y_i \sim Ber(\pi_i)$). Then:
       \begin{itemize}
         \item $\mu_i = \pi_i \in (0,1)$ (since $n_i = 1$)
         \item $Var(Y_i) = \pi_i(1-\pi_i) = \mu_i(1-\mu_i)$
@@ -160,14 +169,14 @@
       \begin{enumerate}
         \item \textbf{Standard normal CDF}: Choose $g^{-1}=\Phi$, with $\Phi \sim N(1,0)$, hence
           $$g = \Phi^{-1} : (0,1) \to (-\infty, +\infty)$$
-          This type of regression ($f \sim \text{ bernoulli }, g = \Phi^{-1}$) is called \textbf{probit regression}.
+          This type of regression ($f \sim \text{ Bernoulli }, g = \Phi^{-1}$) is called \textbf{probit regression}.
         \item \textbf{Logistic CDF}: Consider the logistic distribution, which has density
           $$f(y; \mu, \sigma^2) = \frac{\exp(\nicefrac{(y-\mu)}{\sigma})}{\sigma^2(1 + \exp\left(\nicefrac{(y-\mu)}{\sigma}\right)^2}\;,\; \text{ with } -\infty < y < +\infty$$
           Setting $\mu = 0$, $\sigma^2 = 1$ we get the sigmoid function
           $$g^{-1} = F(y; 0, 1) = \frac{e^y}{1 + e^y}$$
           The link function then becomes the logit link
           $$\frac{e^\eta}{1 + e^\eta} = \mu \implies \eta = \log\left(\frac{\mu}{1-\mu}\right)$$
-          This regression ($f \sim \text{ bernoulli }, g = \text{ logit }$) is the \textbf{logistic regression}. 
+          This regression ($f \sim \text{ Bernoulli }, g = \text{ logit }$) is the \textbf{logistic regression}. 
         \item \textbf{Poisson CDF}: This link function is rarely used since it performs well in niche cases, such as with a binomial distributions with $\pi \sim \text{ Bernoulli }$ (e.g. the number of bacteria on a plate in a dilution bioassay, in which you do not measure the number of bacteria, just whether there are or not). Assume that $Z_i$ is a possion distributed random variable with parameter $\lambda_i$ ($Z_i \sim \text{ Poisson }(\lambda_i)$). Then assume that we measure
         $$
         y_i = 
