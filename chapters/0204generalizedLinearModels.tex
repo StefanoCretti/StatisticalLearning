@@ -96,7 +96,7 @@
         c(y_i; \phi) &= \log\binom{n_i}{y_i}
       \end{align*}
 
-We replaced  $\pi_i = \frac{e^{\theta_i}}{1 + e^{\theta_i}}}$ as:
+We replaced  $\pi_i = \frac{e^{\theta_i}}{1 + e^{\theta_i}}$ as:
 
 	\begin{align*}
 	e^{\theta_i} = \frac{\pi_i}{1-\pi_i} & \Rightarrow (1-\pi_i)e^{\theta_i} = \pi_i \\
@@ -112,7 +112,8 @@ We replaced  $\pi_i = \frac{e^{\theta_i}}{1 + e^{\theta_i}}}$ as:
       $$Var(Y_i) = n_i\pi_i(1-\pi_i) = n_i\frac{\mu_i}{n_i}\left(1-\frac{\mu_i}{n_i}\right) = \mu_i\left(\frac{n_i - \mu_i}{n_i}\right)$$
       This hold true for all GLMs but linear models which is the only homoskedastic model of the group. The fact that heteroskedasticity is mandatory is not a big problem since most datasets are not homoskedastic anyway.
 
-  \section{Connection between $\theta_i$ and ($\mu_i$, $Var(Y_i)$)}
+      % \section{Connection between}
+  \section{Connection between \texorpdfstring{$\theta_i$}{thetai} and \texorpdfstring{$\mu_i$}{mui}, \texorpdfstring{$Var(Y_i)$}{varyi}}
     In general, one can show that, for any function in the EDF,
     $$\mu_i = E[Y_i] = b^\prime(\theta_i)$$
     Where $b^\prime$ is the first derivative of the function $b$.
@@ -122,7 +123,7 @@ We replaced  $\pi_i = \frac{e^{\theta_i}}{1 + e^{\theta_i}}}$ as:
     \end{align*}
     Where $b^{\prime\prime}$ is the second derivative of $b$ and $V(\mu_i)$ is the \textit{variance function} (basically just a way to rewrite underlining the dependence on $\mu$).
 
-    \subsection{Example: connection of $\theta_i$, $\mu_i$ and $Var(Y_i)$ for the binomial model}
+    \subsection{Example: connection of \texorpdfstring{$\theta_i$}{thetai} , \texorpdfstring{$\mu_i$ }{mui} and \texorpdfstring{$Var(Y_i)$}{vari} for the binomial model}
       We know, for the binomial function, that
       $$b(\theta_i) = n_i\log(1+e^{\theta_i})$$
       The first derivative in $\theta_i$ then becomes

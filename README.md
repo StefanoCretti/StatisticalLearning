@@ -5,7 +5,7 @@ To get the notes simply download the .pdf file.
 
 # Lectures
 * Already added: 28-02, 02-03, 07-03, 14-03, 16-03, 21-03
-* To be added: 28-03
+* To be added: 28-03 ...
 
 # Labs and tutoring
 Since all materials for the laboratory and tutoring lectures are already provided in computer-typed format, they will likely not be added to these notes (unless some compelling reason is found).
