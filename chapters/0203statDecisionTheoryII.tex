@@ -22,11 +22,11 @@
       \item $C$ is the number of classes
     \end{itemize}
     
-    \textbf{$K$} is a positive integer and represents the number of training data points
-    closest to the observation data point to consider when classifying. $K$ is
-    called \textbf{tuning parameter}, meaning that it can be tweaked in order to
-    change how the model works; notice that the model is still non-parametric
-    since $K$ does not depend on the training data points.
+    \textbf{$K$} is a positive integer and represents the number of training
+    data points closest to the observation data point to consider when
+    classifying. $K$ is called \textbf{tuning parameter}, meaning that it can be
+    tweaked in order to change how the model works; notice that the model is
+    still non-parametric since $K$ does not depend on the training data points.
 
     In order to use this method you have to: 
     \begin{enumerate}
@@ -91,14 +91,14 @@
 \begin{figure}[ht]
 \caption{Complex and smooth decision surfaces, that respectively belong to complex models and simpler models}
 \centering
-\includegraphics[width=0.6\textwidth]{KneighbourDecisionSurf}
+\includegraphics[width=0.95\textwidth]{KneighbourDecisionSurf}
 \label{}
 \end{figure}
 
 \begin{figure}[ht]
 \caption{Error rate on test data (red), error rate on training data (black), Bayes|constant error rate}
 \centering
-\includegraphics[width=0.6\textwidth]{KneighbourSimpleAgainstComplex}
+\includegraphics[width=0.8\textwidth]{KneighbourSimpleAgainstComplex}
 \label{errorRate}
 \end{figure}
 
@@ -107,16 +107,15 @@ error rates (on test data, the constant error, and on training data) depending
 on the complexity of the model. As it can be seen ... 
 
 \begin{center}
-\textit{An increase in model
-complexity is always associated with a lowering of the error rate on the
-training data, while it is not generally associated with a decrease of the error
-rate performed on the test data. The latter in fact decreases until a certain
-moment, when it starts to increase making a U-shaped curvature. The best case
-scenario would be the model where both the error rates are at their minimum.
-}\end{center}
+\textit{An increase in model complexity is always associated with a lowering of
+the error rate on the training data, while it is not generally associated with a
+decrease of the error rate performed on the test data. The latter in fact
+decreases until a certain moment, when it starts to increase making a U-shaped
+curvature. The best case scenario would be the model where both the error rates
+are at their minimum. }\end{center}
 
 
-  \section{Logistic regression}
+  \section{Logistic regression} \label{sect: logisticReg}
     \subsection{Why we cannot use linear regression in classification setting}
     \textbf{Example 1:} We want to predict the medical condition of a patient in
     the emergency room based on their symptoms. Assume that $Y$ takes only 3
@@ -147,8 +146,8 @@ scenario would be the model where both the error rates are at their minimum.
 
     \hfill
 
-    \noindent\textbf{Example 2:} Assume that $Y$ from the previous example only takes 2
-    values:
+    \noindent\textbf{Example 2:} Assume that $Y$ from the previous example only
+    takes 2 values:
     $$
     Y = \begin{cases}
           0 \text{ if stroke} \\
@@ -172,14 +171,14 @@ scenario would be the model where both the error rates are at their minimum.
       E[Y] = 0 \cdot (1-p) + 1 \cdot p = p && \text{where $p$ represents the probability of getting a $1$}
     \end{align*}
      
-    Given these premises, you can
-    write:
+    Given these premises, you can write:
     $$E[Y|\vec{X} = \vec{x}] = p(1|\vec{x}) = \beta_0 + \beta_1 x_1 + \dots +
     \beta_px_p$$ Or considering just the Bernoulli case:
     $$\hat{E[Y|\vec{X} = \vec{x}]} = \hat{\beta}_0 + \hat{\beta}_1x_1$$ But
     notice that:
     \begin{itemize}
-      \item $p(1|\vec{x}) \in (0, 1)$, so the probability should span between $0$ to $1$
+      \item $p(1|\vec{x}) \in (0, 1)$, so the probability should span between
+      $0$ to $1$
       \item $\beta_0 + \beta_1 x_1 + \dots + \beta_px_p \in (-\infty, +\infty)$,
       yet using linear regression the probability spans over the entirety of
       $\mathbb{R}$.
@@ -220,11 +219,11 @@ certain values of $\vec{x}$ are possible.}
     \end{itemize}
 
     \begin{figure}[ht]
-      \caption{Linear regression (left) \textbf{vs} Logistic regression (right) for
-      classification problems. Notice on the left the fact that values under $0$ for
-      certain values of $\vec{x}$ are possible.}
+      \caption{Linear regression (left) \textbf{vs} Logistic regression (right)
+      for classification problems. Notice on the left the fact that values under
+      $0$ for certain values of $\vec{x}$ are possible.}
       \centering
-      \includegraphics[width=0.85\textwidth]{logRegressionBernoulli}
+      \includegraphics[width=0.7\textwidth]{logRegressionBernoulli}
       \label{classification: logRegExample}
       \end{figure}    
 
@@ -234,8 +233,8 @@ certain values of $\vec{x}$ are possible.}
     logRegExample}, the curve is sigmoid shape with intercept in $y=0.5$. It
     increases when the value of $\beta_1 > 0$.
     
-    The $g$ function is the inverse of the conversion from linear regression to
-    logistic function. %#TODO not so clear to me why this
+    % The $g$ function is the inverse of the conversion from linear regression
+    % to logistic function. %#TODO not so clear to me why this
     
     In the binomial case, the logistic function can be written as:
 	\begin{align*}
@@ -251,10 +250,11 @@ certain values of $\vec{x}$ are possible.}
 	               & \text{since } \frac{a^x}{a^y} = a^{x-y}
 	\end{align*}
 
-    % TODO Add image
 	
     Let us define a quantity called \textbf{odds}, which is the ratio between
-    positive and negative outcomes.
+    positive and negative outcomes (the fraction of the probability of obtaining
+    result $1$ over the one corresponding to the obtaining class $0$).
+
 	\begin{align*}
 	  \text{Odds } &= \frac{p(1|\vec{x})}{1 - p(1|\vec{x})}
 	               & \text{by definition}\\
@@ -274,12 +274,18 @@ certain values of $\vec{x}$ are possible.}
 	               & \text{simplifying}\\
 	\end{align*}
     
-	As it can be seen from the formula, $Odds = \frac{p(1|\vec{x})}{1 -
+	As it can be seen from the formula, $\text{Odds} = \frac{p(1|\vec{x})}{1 -
 p(1|\vec{x})} = e^{\vec{\beta}^t\vec{x}} $ can take any value between $[0,
 +\inf]$, indicating very low and high probabilities of positive outcome
-respectively. The predictor for this measure is called \textbf{log-odds} or
-\textbf{logit} (it is the $g$ function from before) is obtained applying a
-logarithmic tranformation, hence:
+respectively (the bigger is the value of $p(1|\vec{x})$, the lower is the value
+of $1- p(1|\vec{x})$). \\
+
+\noindent \textbf{Example}: on average $1$ in $5$ people with an odds of
+$\frac{1}{4}$ will default, since $p(X) = 0.2$ implies an odds of
+$\frac{0.2}{1-0.2} = \frac{1}{4}$. \\
+
+The predictor for this measure is called \textbf{log-odds} or \textbf{logit} and
+it is obtained applying a logarithmic tranformation, hence:
     $$
     \log\left(\frac{p(1|\vec{x})}{1 - p(1|\vec{x})}\right) 
     = \beta_0 + \beta_1 x_1 + \dots + \beta_px_p 
@@ -287,21 +293,27 @@ logarithmic tranformation, hence:
     $$
     % TODO Add image of logit
     
-    The formal definition of a logistic regression model (assuming the random
-    variable to be Bernoulli distributed) then becomes:
+    The logistic regression model (assuming the random variable to be Bernoulli
+    distributed \textbf{[}$Y|\vec{X} = \vec{x} \sim
+    Bernoulli(p(1|\vec{x}))$\textbf{]}) is defined as follows:
 
-    $$Y|\vec{X} = \vec{x} \sim Bernoulli(p(1|\vec{x}))$$
     $$\log\left(\frac{p(1|\vec{x})}{1 - p(1|\vec{x})}\right) = \beta_0 + \beta_1
     x_1 + \dots + \beta_px_p $$
     
-    The coefficients can be interpeted as follows: a one-unit increase in $X_j$
+    The coefficients can be interpeted as follows: a one-unit increase in $x_j$
     (while everithing else is kept constant) induces a change in the log-odds of
-    $\beta_j$ (while it induces a multiple factor of $e^{\beta_j}$ for the
-    odds).
+    $\beta_j$, while instead it multiplies the odds by $e^{\beta_j}$ (see the
+    example written below). \\
 
-    \subsection{Example of logistic regression}
-    \textbf{Example}: Logistic regression for a single predictor $X$ which is
-    binary.
+    \noindent\textbf{Example}: Logistic regression for a single predictor $X$
+    which is binary.
+
+    \begin{figure}[ht]
+      \caption{Demonstration written by the professor}
+      \centering
+      \includegraphics[width=0.85\textwidth]{demonstrationLogoddsChange}
+      \label{logoddchange}
+      \end{figure}
 
     To compute the change of the log-odds for a one-unit change of $X$ we
     compute
@@ -339,18 +351,26 @@ logarithmic tranformation, hence:
     \subsection{Parameter estimation in logistic regression}
     When estimating parameters for non-linear regressions you often get
     non-closed form expressions, therefore the maximum likelihood(s) for the
-    parameter(s) must be maximised numerically. Notice that, contrarely to
-    linear regression, you cannot use the least square method.
+    parameter(s) must be maximised numerically. Notice that, contrarily to
+    linear regression, you cannot use the least square method. \\
 
     For instance, give some training data $(\vec{x}_i, y_i), \; i=1, \dots, n$,
-    we want to estimate $\beta_0, \beta_1, \dots, \beta_p$. To do so we need to
-    compute the maximum likelihood given that $Y$ is binary, thus
+    we want to estimate the best values of $\beta_0, \beta_1, \dots, \beta_p$ to
+    fit the values of $y$. To do so we need to compute the maximum likelihood
+    given that $Y$ is binary, thus
     $$Y|\vec{X} = \vec{x} \sim Bernoulli(p(1|\vec{x})), \; f(y|\vec{x}) =
     p(1|\vec{x})^y(1-p(1|\vec{x}))^{1-y}$$
+
+    To put into words what is written here, for dummies like me, the probability
+    that a point, obtained given some $\vec{x}$, is classified to the $0$ class,
+    is equal to $p(1|\vec{x})^0 (1-p(1|\vec{x}))^{1-0} = 1 * (1-p(1|\vec{x}))$.
+    Coherently, the probability that a point is classified to the $1$ class, is
+    equal to $p(1|\vec{x})^1 (1-p(1|\vec{x}))^{1-1} = p(1|\vec{x}) * 1$. The
+    probabilities of all the points are multiplied to obtain the likelihood
+    function, written below:
     
-    The likelihood conditional to the observations hence is:
     \begin{align*}
-    L(\vec{\beta}) = \prod_{i=1}^{n}f(y_i|\vec{x}_i) = \prod_{i=1}^{n}p(1|\vec{x}_i)^{y_i}(1-p(1|\vec{x}_i))^{1-y_i}
+    L(\vec{\beta}) = \prod_{i=1}^{n}f(y_i|\vec{x}_i) = \prod_{i=1}^{n}p(1|\vec{x}_i)^{y_i}(1-p(1|\vec{x}_i))^{1-y_i} && \text{given some values of $\beta_0$ and $\beta_1$}
     \end{align*} %coul dbe n-y_i???
     
     We then compute the log-likelihood and reorganize it in order to make
@@ -382,20 +402,28 @@ logarithmic tranformation, hence:
     \frac{\partial l(\beta)}{\partial \beta_j}
     &=\frac{\partial}{\partial \beta_j}\left(\sum_{i=1}^{n}\left[y_i\vec{\beta}^t\vec{x}_i-\log\left(1+e^{\vec{\beta}^t\vec{x}_i}\right)\right]\right) \; j = 0,\,\dots,\,p \\
     & \text{ but } \frac{\partial\vec{\beta}^t\vec{x}}{\partial\beta_j} 
-      = \frac{\partial}{\partial\beta_j}(\beta_0 x_{i0} + \dots +\beta_p x_{ip}) = x_{ij} \text{ since the other terms simplify}\\
-    &=\sum_{i=1}^{n}\left[y_ix_{ij}-\frac{e^{\vec{\beta}^t\vec{x}_i}}{1+e^{\vec{\beta}^t\vec{x}_i}}x_{ij}\right] \\
+      = \frac{\partial}{\partial\beta_j}(\beta_0 x_{i0} + \dots +\beta_p x_{ip}) = x_{ij} \text{ since the other terms simplify, consequently}\\
+    &= \sum_{i=1}^{n}\left[y_ix_{ij}-\frac{1}{1+e^{\vec{\beta}^t\vec{x}_i}} * e^{\vec{\beta}^t\vec{x}_i} * x_{ij}\right] = 
+    \sum_{i=1}^{n}\left[y_ix_{ij}-\frac{e^{\vec{\beta}^t\vec{x}_i}}{1+e^{\vec{\beta}^t\vec{x}_i}}x_{ij}\right] \\
     & \text{ but } \frac{e^{\vec{\beta}^{t}\vec{x}_i}} {1+e^{\vec{\beta}^{t}\vec{x}_i}} = p(1|\vec{x}) \text{ therefore} \\
     &=\sum_{i=1}^{n}\left[y_ix_{ij}-p(1|\vec{x}_i)x_{ij}\right]
     \end{align*}
     
     By setting this derivative to zero you obtain $p+1$ equations in $p+1$
-    parameters, therefore to optimize numerically the function (by solving the
-    equations) you must use an optimization method like \textbf{Newton-Raphson};
-    the \textit{gml} function in R uses an iterative reweighted least-squares
-    algorithm, which is a variation of the Newton-Raphson method).
+    parameters (where $p$ is the number of $\beta$ parameters), therefore to optimize
+    numerically the function (by solving the equations) you must use an
+    optimization method like \textbf{Newton-Raphson}. The \textit{gml} function
+    in R uses an iterative reweighted least-squares algorithm, which is a
+    variation of the Newton-Raphson method. \\
+
+    %Maybe it could be studied more the Newton_Raphson method, or study better
+    %the way the function gml works in R #TODO
 
     From the optimization you get $\hat{\vec{\beta}} = \hat{\beta}_0,
     \hat{\beta}_1, \dots, \hat{\beta}_p $, which can be used to estimate
     $p(1|\vec{x})$, since
     $$\hat{p(1|\vec{x})} =
-    \frac{e^{\hat{\vec{\beta}^t}\vec{x}}}{1+e^{\hat{\vec{\beta}^t}\vec{x}}}$$
+    \frac{e^{\hat{\vec{\beta}^t}\vec{x}}}{1+e^{\hat{\vec{\beta}^t}\vec{x}}}$$\\
+
+    Look to pages $137-139$ from "\textit{An introduction to statistical learning with
+    applications in R}" (doi:$10.1080/24754269.2021.1980261$) for examples.
