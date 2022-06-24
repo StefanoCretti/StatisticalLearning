@@ -1,0 +1,140 @@
+\chapter{Resampling methodds (ChS)}
+we have seen a number of classifiers: LR, LDA, QDA, NB, KNN
+often discussed bias variance 
+
+if have 2 classes, and 2 predictors, when k small, flexible method, divide the samaples smoothly. with k large instead not perfect classification
+
+\begin{figure}[h]
+\caption{}
+\centering
+\includegraphics[width=0.6\textwidth]{}
+\label{}
+\end{figure}
+
+
+in the case of polynomial regression, with degree d, when d = 1, linear surface, when d = 2 quadratic su rface, d >> closer and closer to the training data. large d will give more flexible models. 
+
+\begin{figure}[h]
+\caption{}
+\centering
+\includegraphics[width=0.6\textwidth]{}
+\label{}
+\end{figure}
+
+it is not always the better idea to use the most complex modle. the prediction error is the MSE in regression cases, or the error rate in classification, at different complexity levels (d or \frac{1}{k}). On the training data, you will always fit better the training data with higher complex models. In the case of not seen data, the model reach an optimal point, more and more complex overfitting the training ddata, the model will not do well on new data. 
+
+\textbf{model selection}: what is the optimal point, the optimal parameter (which defines the complexity of the model), represents finding the minimum of the curve. 
+\textbf{model assessment}: you have to quantify the error rate of the model at the minimum, in order to compare it with other models.\\
+
+
+\textbf{How to find the minimum of the curve (best scenario/solution)?} a large designated test data, left aside to select the optimal model. Often not vavailable. there are so two main strategies that one can use.
+
+\begin{enumerate}
+	\item make some mathematical adjustments to the training error rate in order to estimate the testo error rate. Make the training data error rate to curve as the testing data error rate. The methods used are AIC (Akaike), BIC, Cp Mallowst.
+	\item resampling methods: not adjusting the error data, try to estimate directly the test error rate by devisingg a resampling strategy and fitting the model on one part of the data and testing it on another. How do you split= it would be needed enough data for training and testing?
+\end{enumerate}
+
+\subsection{Different resampling strategies}
+1- validation set approach:
+randomly divide the dataset in two parts: a training set and a validation/testset. different possible  percentages, $ 50-50 $ , $ 70-30 $
+
+The model is fit on the training data and the fitted model is used to predict the test data and compare with teh true responses. 
+
+in the case of polynomial regression, in the case of d = 2 (quadratic polynomial)
+$\hat{\beta}$ obtained on the training data
+betahat used to calculate yhat on the test data.
+In the case of KNN, for a specific value of K (from 1 to ...), estimate the $\hat{p}(1|\vec{x_i})$ using the K nearest training points. The estimation has to be compared to the true classes on test data. (you split once, MSE for various values of K. observe different curves)
+Some issues:
+Variability in MSE/error rates for different data splits, not using all the data to fit the model (in a 50-50 model, you're not considering the 50\% of the data to train the model).
+One possible solution is to repear the training and test and take an average at the end. An average is more robust then the result obtained by a single a single split. Still a possible issue in returning over-extimates of test error rate, since the model does not see the full data.
+
+\textbf{K-Fold} cross validation tries to address this issue:
+the idea is to randomly divide the data into K equally sized parts (approximately $\frac{n}{k}$ observations). Each time it is chosen a validation test, the other are combined together to create the training data, the rest is validation data. at the second iteration, you will choose the second as validation set, the others will belong to te training data. The process iterates for each k group
+
+\begin{figure}[h]
+\caption{example with $k= 5$}
+\centering
+\includegraphics[width=0.6\textwidth]{}
+\label{procedKfoldCrossV}
+\end{figure}
+
+formally it will be done this procedure \ref{procedKfoldCrossV}:
+\begin{enumerate}
+	\item fix one model
+	\item let $c_1 \dots, c_k$ be the indices of the observations in each fold
+	\item for each fold, fit the model on the remaining folds and test ion the selected fold
+	
+	$$ E_i = MSE_i = \sum_{j \in C_i} \frac{(y_i - \hat{y_i})^2}{|C_i|}
+	
+	\sum_{j \in C_i} \frac{(y_i - \hat{y_i})^2}{|C_i|}$$
+	
+	\item combine the results from all folds, usually taking the average:
+	$$CV_(k) = \sum_{i = 1}^k \frac{E_i}{k}$$
+	%cross validated error for a number of folds
+\end{enumerate}
+
+%itemize remarks %TODO
+Some remarks: eventually yout model will have observed the whole data, in fact, you partition your dataset, and at a certain point they will be considered, either in fitting and testing. It is computationally expansive, since the model is fitted $k$ times. Less variability compared to train-test split. $K = n$ it is not possible randomness, you are leaving one out each time, it has a special name, which is \emph{leave-one-out cross validation}
+
+
+\subsection{LOOCV}
+$$ CV_(n) = \frac{\sum_{i=1}^n E_i}{n}$$ where $E_i$ is the error on observation i when the model is fit on all remaining observations.
+
+\textbf{Disadvantages:}
+\begin{enumerate}
+	\item  computational time: in special cases (linear regression), there are computationally efficient fomulae
+	
+	$$ CV_(n) = \frac{1}{n} \sum_{i=1}^n (\frac{y_i - \hat{y_i}}{1- h_i})^2 $$
+	by readjustement of the mean squared error, it is possible to redue CV, $	1- h_i$ is the 		leverage associate to observation $i$
+	
+	\begin{figure}[h]
+	\caption{the model will change if you remove a particular data point}
+	\centering
+	\includegraphics[width=0.6\textwidth]{}
+	\label{}
+	\end{figure}
+	
+	\item it doesn't "shake" up the data enough. Folds are really similar, they differ for 1 observation). almost identical datasets, which induces a correlation in the error rates (increasing also the variance of the $CV_{n}$ estimate)
+\end{enumerate}
+
+several studies converge in saying it is better to use $k = 5$ or $k = 10$
+
+\subsection{Cross-validation: the right way to do it}
+Let's think an hypothetical setting, some data and we would like to choose between logistic regression and KNN. You already have a fixed model (a series of known predictors) for logistic, while I don't know what to do with KNN\\
+
+we would like to select K (model selection), and compare the two models (Model assessment)
+I have different values of K, to have $\frac{1}{k}$ ranging between $0.01$ and $1$, choose k on a train/test split, I evaluate optimal NN and logistic regression on test data and choose the best one. you choose the k parameter useful
+%KNN vs logistic regression comparison %TODO
+
+Not quite a fair comparison, as KNN has already "seen" the test data in the ... . the right way of doing it would be to create $3$ subsets (splits): train, validation, test. The test data is untouched until the very last moment, when comparing the different models. Train and validation for tuning the model (model selection), the selected model is then used on the test data, which is used only for model assessment (of optimal models if tuning parameters).
+
+\begin{figure}[h]
+\caption{}
+\centering
+\includegraphics[width=0.6\textwidth]{}
+\label{}
+\end{figure}
+
+This can be refined into nested cross-validation: one for ttest, k-fold cross validation on the other folds
+
+\begin{figure}[h]
+\caption{}
+\centering
+\includegraphics[width=0.6\textwidth]{}
+\label{}
+\end{figure}
+
+Once a model is chosen, you can use the full data for fitting/predictions on new data.
+
+
+\subsection{Alternative to CV}
+adjusting training error rate in MSE  to account for model complexity. Quite common criteria are 
+\begin{enumerate}
+	\item $$ AIC = -\frac{2}{n}\log{L} + \frac{2d}{n}$$ 
+	evaluated fo a fiven model, $n$ is the sample size, the $logL$ is the log-likelihood maximum. Compensation of AIC through $\frac{2d}{n}$ where d represents the model complexity. It is evaluated for a given model, it is chosen the model with the smallest AIC.
+	
+	\item \textbf{Bayesian Information Criterion (BIC)}:
+	$$ BIC = - \frac{2}{n}\log{L} + \frac{\log{(n)}}{n} d $$
+	where $\log{n} > 2$ so a heavier penalty compared to $AIC$
+\end{enumerate}
+ 

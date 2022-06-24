@@ -1,3 +1,5 @@
+\graphicspath{{chapters/images/0201/}}
+
 \chapter{What is statistical learning?}
   
   \section{Definition of statistical learning}
@@ -5,34 +7,46 @@
 
     \begin{itemize}
       \item $Y$ : response/dependent/outcome variable
-      \item $\vec{X} = (X_1, \dots, X_p)$: vector of predictors/features/independent variables/covariates
+      \item $\vec{X} = (X_1, \dots, X_p)$: vector of
+      predictors/features/independent variables/covariates
     \end{itemize}
-    We assume that there is a relationship between $Y$ and $\vec{X}$, which can be written as:
+    We assume that there is a relationship between $Y$ and $\vec{X}$, which can
+    be written as:
 
-    $$Y = f(\vec{X}) + \varepsilon $$
-    Where:
+    $$Y = f(\vec{X}) + \varepsilon $$ Where:
     \begin{itemize}
-      \item $f(\vec{X})$ is the deterministic (but unknown) function of the vector $\vec{X} = (X_1, \dots, X_p)$
-      \item $\varepsilon$ is the error (stochastic part), for which we assume the following properties:
+      \item $f(\vec{X})$ is the deterministic (but unknown) function of the
+      vector $\vec{X} = (X_1, \dots, X_p)$
+      \item $\varepsilon$ is the error (stochastic part), for which we assume
+      the following properties:
       \begin{itemize}
         \item[$\bullet$] $E[\varepsilon] = 0$ (Its expected value is zero)
-        \item[$\bullet$] $\varepsilon \perp \vec{X}$ (It is independent from $\vec{X}$)
+        \item[$\bullet$] $\varepsilon \perp \vec{X}$ (It is independent from
+        $\vec{X}$)
       \end{itemize}
     \end{itemize}
-    Therefore, the expression \textbf{statistical learning} encompasses different methods to estimate $f(\vec{X})$. 
 
-  \section{Why estimate \textit{f}?}
-    There are two main reasons to estimate $f$, those two being \textbf{prediction} and \textbf{inference}.
+    the $\epsilon$ value represents the stochastic error, which is the estimated
+    error in a model that arises from the exclusion of an important explanatory
+    variable or due to incorrect specification. Therefore, the expression
+    \textbf{statistical learning} encompasses different methods to estimate
+    $f(\vec{X})$. 
+
+  \section{Why estimate \textit{f}?} There are two main reasons to estimate $f$,
+    those two being \textbf{prediction} and \textbf{inference}.
   
     \subsection{Prediction}
-      Predict $Y$ when we only have observations about $\vec{X}$. Since $E[\varepsilon] = 0$, we usually take:
+      Predict $Y$ when we only have observations about $\vec{X}$. Since
+      $E[\varepsilon] = 0$, we usually take:
 
       $$\hat{Y} = \hat{f} (\vec{X})$$
 
       With $\hat{f}$ being our estimate of $f$.
       
-      If this is the only reason to estimate $f$, then $\hat{f}$ can be a black-box method (deep learning).
-      The accuracy of $\hat{Y}$ as a predictor of $Y$ can be described calculating the expected MSE (mean squared error):
+      If this is the only reason to estimate $f$, then $\hat{f}$ can be a
+      \textit{\textbf{black-box}} method (deep learning). The accuracy of
+      $\hat{Y}$ as a predictor of $Y$ can be described calculating the expected
+      \textbf{MSE}, the test Mean Squared Error. %#TODO ref image:
 
       \begin{align*}
         E[(Y&-\hat{f}(\vec{X}))^2 \,|\, \vec{X} = \vec{x}\,] = 
@@ -52,7 +66,9 @@
         Var(\varepsilon) 
         & = E[(\varepsilon - E(\varepsilon))^2]
         & \text{formal definition of variance} \\
-        & = E[\varepsilon^2] - (E[\varepsilon])^2  
+        & = E[\epsilon^2 + (E(\epsilon))^2 - 2E(\epsilon)\epsilon]
+        & \text{solving the square} \\
+        & = E[\varepsilon^2] - (E[\varepsilon])^2  %shouldn't it be a +??? #TODO
         & \text{definition generally used during calculation} \\
         & = E[\varepsilon^2] 
         & \text{since } E[\varepsilon] = 0 \\
@@ -71,60 +87,98 @@
 
       With:
       \begin{itemize}
-        \item $(f(\vec{X}) - \hat{f}(\vec{X}))^2$ being the \textbf{reducible error}. The model choice can increase or reduce this value, hence it is mostly controllable.
-        \item $Var(\varepsilon)$ being the \textbf{irreducible error}. This value depends on the innate randomness present in the data, hence you can only try and minimize it by deciding which variables to use in your prediction (but it will never be zero otherwise you would have a deterministic situation).
+        \item $(f(\vec{X}) - \hat{f}(\vec{X}))^2$ being the \textbf{reducible
+        error}. The model choice can increase or reduce this value, hence it is
+        mostly controllable.
+        \item $Var(\varepsilon)$ being the \textbf{irreducible error}. This
+        value depends on the innate randomness present in the data, hence you
+        can only try and minimize it by deciding which variables to use in your
+        prediction (but it will never be zero otherwise you would have a
+        deterministic situation).
       \end{itemize}
 
-      % TODO Add image of graph
+      % #TODO Add image of graph
 
     \subsection{Inference}
-      Inference is used when you want to understand the relation between $Y$ and $\vec{X}$ (and not just be able to make predictions). Namely, inference answers questions such as:
+      Inference is used when you want to understand the relation between $Y$ and
+      $\vec{X}$ (and not just be able to make predictions). Namely, inference
+      answers questions such as:
       \begin{itemize}
-        \item Which predictors/factors are most associated with the response?
-        \item What is the relationship between $Y$ and $X_j$?
+        \item \textit{Which predictors/factors are most associated with the
+        response?}
+        \item \textit{What is the relationship between $Y$ and $X_j$?}
       \end{itemize}
 
-  \section{How to extimate \textit{f}?}
-    Given some \textbf{training data} $(\vec{x}_i, y_i), \, i = 1, \dots, n$, where $\vec{x}_i = (x_{i1}, \dots, x_{ip})^t$ is the vector of observations of unit $i$ while $y_i$ is the response for unit $i$, broadly speaking there are two types of methods to estimate $f$: \textbf{parametric methods} and \textbf{non-parametric methods}.
+  \section{How to extimate \textit{f}?} Given some \textbf{training data}
+    $(\vec{x}_i, y_i), \, i = 1, \dots, n$, where $\vec{x}_i = (x_{i1}, \dots,
+    x_{ip})^t$ is the vector of observations of unit $i$ while $y_i$ is the
+    response for unit $i$, broadly speaking there are two types of methods to
+    estimate $f$: \textbf{parametric methods} and \textbf{non-parametric
+    methods}.
 
     \subsection{Parametric methods}
-      In order to use parametric methods, we make an assumption about the functional form of $f(\vec{X})$, that assumption being that the form of the function depends on some parameters (which we can estimate). An example of parametric method is \textbf{linear regression}, which implies that $f(\vec{X})$ is in the form:
+      In order to use parametric methods, we make an assumption about the
+      functional form of $f(\vec{X})$, that assumption being that the form of
+      the function depends on some \textit{parameters} (which we can estimate).
+      An example of parametric method is \textbf{linear regression}, which
+      implies that $f(\vec{X})$ is in the form:
 
       $$f(\vec{X}) = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \dots + \beta_p X_p$$
+      Where the great $X$s represent the predictors. Given this assumption,
+      statistical learning becomes \textbf{fitting} (or training) the model on
+      the data, which means estimating the parameters $\hat{\beta_0},
+      \hat{\beta_1}, \dots, \hat{\beta_p}$ such that:
 
-      Given this assumption, statistical learning becomes \textbf{fitting} (or training) the model on the data, which means estimating the parameters $\hat{\beta_0}, \hat{\beta_1}, \dots, \hat{\beta_p}$ such that:
+      $$\hat{f}(\vec{X}) = \hat{\beta_0} + \hat{\beta_1} X_1 + \hat{\beta_2} X_2
+      + \dots + \hat{\beta_p} X_p$$
 
-      $$\hat{f}(\vec{X}) = \hat{\beta_0} + \hat{\beta_1} X_1 + \hat{\beta_2} X_2 + \dots + \hat{\beta_p} X_p$$
+      The main disadvantage of these methods is that they may be \textbf{too
+      restrictive}, as they would depend on a limited number of predictors.
 
-      The main disadvantage of these methods is that they may be \textbf{too restrictive}.
-
-      Notice that linear models are \underline{linear in the parameters}, not in the predictors, hence:
+      Notice that linear models are \underline{linear in the parameters}, not in
+      the predictors, hence:
       \begin{itemize}
-        \item $f(X_1) = \beta_0 + \beta_1 X_1 + \beta_2 X_1^2 + \beta_3 X_1^3 + \varepsilon$ (polynomial regression) is a linear model.
-        \item $f(X_1) = \beta_0 X_1^{\beta_1}$ is \underline{not} a linear model.
+        \item $f(X_1) = \beta_0 + \beta_1 X_1 + \beta_2 X_1^2 + \beta_3 X_1^3 +
+        \varepsilon$ (polynomial regression) is a linear model.
+        \item $f(X_1) = \beta_0 X_1^{\beta_1}$ is \underline{not} a linear
+        model.
       \end{itemize}
 
     \subsection{Non-parametric methods}
-      Non-parametric methods do not make any explicit assumption on the function form of $f(\vec{X})$. These methods want to estimate $f$ by getting as close as possible to the data, without being too \textit{rough or wiggly} (basically \textbf{overfitting}).
+      Non-parametric methods do not make any explicit assumption on the function
+      form of $f(\vec{X})$. These methods want to estimate $f$ by getting as
+      close as possible to the data, without being too \textit{rough or wiggly}
+      (basically \textbf{overfitting}).
 
     \subsection{Parametric vs non-parametric methods}
-      Despite parametric methods being more restrictive than non-parametric ones, we might still choose to adopt the former for the sake of interpretability and generalizability outside of the training data.
+      Despite parametric methods being more restrictive than non-parametric
+      ones, we might still choose to adopt them for the sake of interpretability
+      and generalizability outside of the training data. %TODO
+      % sezione ampliabile. #TODO
 
   \section{Bias-variance trade-off}
 
-    Assume you have some data pairs in the form $(x_i, y_i), \, i = 1, \dots, n$; you can then define the estimate function $\hat{f}(x)$ as a linear model with up to $n-1$ parameters (more parameters give the same result as $n-1$ parameters) and an intercept value. You could thus use, for instance, the models:
+    Assume you have some data pairs in the form $(x_i, y_i), \, i = 1, \dots,
+    n$; you can then define the estimate function $\hat{f}(x)$ as a linear model
+    with up to $n-1$ parameters (more parameters give the same result as $n-1$
+    parameters) and an intercept value. You could thus use, for instance, the
+    models:
     \begin{align*}
       & 1 \text{ parameter}    &f(x) &= \beta_0 + \beta_1x + \varepsilon \\
       & 2 \text{ parameters}   &f(x) &= \beta_0 + \beta_1x + \beta_2x^2 + \varepsilon \\
       & \vdots                 &     &\vdots \\
       & n-1 \text{ parameters} &f(x) &= \beta_0 + \beta_1x + \beta_2x^2 + \dots + \beta_{n-1}x^{n-1} + \varepsilon \\
     \end{align*}
-    You could choose the model with the highest number of parameters; this model would explain all the variance of the training data ($R^2=1$) yet it would be very complex and perform badly with new data points. On the other hand a model with a lower number of parameters would explain less of the variance of the training data, yet it could perform better with new data points.
 
-    % TODO Add image of bias graph
+    You could choose the model with the highest number of parameters; this model
+    would explain all the variance of the training data ($R^2=1$) yet it would
+    be very complex and perform badly with new data points. On the other hand a
+    model with a lower number of parameters would explain less of the variance
+    of the training data, yet it could perform better with new data points. \\\\
 
-    Keeping in mind that $Y$ is random and that $\hat{f}$ is a random variable estimated from the data,
-    when using the general formula to determine how well a model performs at generic $\vec{X}$, we notice:
+    Keeping in mind that $Y$ is random and that $\hat{f}$ is a random variable
+    estimated from the data, when using the general formula to determine how
+    well a model performs at generic $\vec{X}$, we notice:
     \begin{align*}
       E[(Y&-\hat{f}(\vec{X}))^2 \,|\, \vec{X} = \vec{x}\,] = \\
       & = E[(f(\vec{X}) + \varepsilon - \hat{f}(\vec{X}))^2] 
@@ -132,7 +186,7 @@
       & = E[(f(\vec{X}) + \varepsilon - \hat{f}(\vec{X}) + E[\hat{f}(\vec{X})] - E[\hat{f}(\vec{X})])^2]
       & \text{since } E[\hat{f}(\vec{X})] - E[\hat{f}(\vec{X})] = 0\\
       & = E[((f(\vec{X}) - E[\hat{f}(\vec{X})])+ \varepsilon + (E[\hat{f}(\vec{X})] - \hat{f}(\vec{X})))^2]
-      & \text{grouping}\\
+      & \text{grouping, square of three elements}\\
       & = E[(f(\vec{X}) - E[\hat{f}(\vec{X})])^2] + E[\varepsilon^2] + E[(E[\hat{f}(\vec{X})] - \hat{f}(\vec{X}))^2] \, +
       & \\
       & \;\;\;\, + 2E[(f(\vec{X}) - E[\hat{f}(\vec{X})])\,\varepsilon] \, + & \\
@@ -175,18 +229,48 @@
     \end{align*} 
     Where:
     \begin{itemize}
-      \item $f(\vec{X}) - E[\hat{f}(\vec{X})])^2$ is the bias
-      \item $Var(\varepsilon)$ is the irreducible error
-      \item $Var(\hat{f}(\vec{X}))$ is the variance of the model
+      \item $f(\vec{X}) - E[\hat{f}(\vec{X})])^2$ is the \textbf{bias}
+      \item $Var(\varepsilon)$ is the \textbf{irreducible error}
+      \item $Var(\hat{f}(\vec{X}))$ is the \textbf{variance} of the model
     \end{itemize}
-    \textbf{Bias} refers to the error that is introduced by approximating a problem, which may be extremely complicated, by a much
-    simpler model. If an estimated model performs well on the training data but it does not perform well on new data, the estimated model has high bias. If an estimated model performs well on multiple data sets, the estimated model has low bias. High bias means that an estimated model is far from the real model. \\
-    \textbf{Variance} refers instead to the amount by which $\hat{f}$ would change if we
-    estimated it using a different training data set. Ideally, the $\hat{f}$ calculated 
-    through different datasets should be not significantly different. The more flexible models are generally more influenced by a change of dataset. \\
-    In order to minimize the expected error, we need to achieve low bias and low variance. In practice, one needs to find a good trade-off between bias and variance, since reducing one often involves increasing the other. In general:
+    \textbf{Bias} is the amount that a model’s prediction differs from the
+    target value, compared to the training data. Generally bias is consequently
+    results from simplifying the assumptions used in a model. If an estimated
+    model performs well on multiple data sets, the estimated model has low bias.
+    \textit{High bias means that an estimated model is far from the real model}.
+    \\\\
+    \textbf{Variance} refers instead to the amount by which $\hat{f}$ would
+    change if we estimated it using a different training data set. Ideally, the
+    $\hat{f}$ calculated through different datasets should be not significantly
+    different, the model should be fitted equivalently using a different
+    training dataset. The more flexible models, the more they are influenced by
+    a changes of the training dataset. \\\\
+
+    \begin{figure}[h]
+      \caption{  
+      As the flexibility of a model increases, the Bias decreases, and the
+      varaiance of the model increases}
+      \centering
+      \includegraphics[width=0.3\textwidth]{MSEdependsonVarianceandBias}
+      \label{MSEVarianceBias}
+      \end{figure}
+
+    In order to minimize the expected error, we need to achieve low bias and low
+    variance. In practice, one needs to find a good \textbf{trade-off} between
+    bias and variance, since reducing one often involves increasing the other.
+    In general:
     \begin{itemize}
-      \item A \textbf{simpe model} has high bias (it is far from the real model) and low variance (when fitting using different training data you get similar estimated parameters).
-      \item A \textbf{complex model} has low bias and high variance.
+      \item A \textbf{simpe model} has high bias (it is far from the real model)
+      and low variance (when fitting using different training data you get
+      similar estimated parameters).
+      \item A \textbf{complex model} has low bias and high variance, as the
+      complexity of the model has the aim of making it as near as possible to
+      the real $ f $.
     \end{itemize}
-    Both in parametric and non-parametric methods, you generally have at least one \textbf{tuning parameter}, which is a parameter that can be tweaked (for instance the degree of the polinomial) in order to choose the balance between bias and variance.
+    Both in parametric and non-parametric methods, you generally have at least
+    one \textbf{tuning parameter}, which is a parameter that can be tweaked (for
+    instance the degree of the polinomial) in order to choose the balance
+    between bias and variance.
+   
+
+
